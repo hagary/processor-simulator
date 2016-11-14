@@ -8,8 +8,7 @@ public class Cache {
 	private int lines; //#blocks = s/l
 	private int m; //associativity
 	private int hitCycles;
-	private CacheEntry[] sets; //size=sets
-	private boolean[] dirty; //
+	private Set[] sets; //size=sets
 	
 	public Word readWord(int wordAddress){
 		return null;   
@@ -27,7 +26,7 @@ public class Cache {
 		return ;   
 	}
 	
-	public CacheEntry findInCache(int cacheEntryAddress){
+	public CacheEntry findInCache(int lineAddress){
 		return null;
 	}
 	
@@ -99,20 +98,13 @@ public class Cache {
 		this.hitCycles = hitCycles;
 	}
 
-	public CacheEntry[] getSets() {
+	public Set[] getSets() {
 		return sets;
 	}
 
-	public void setSets(CacheEntry[] sets) {
+	public void setSets(Set[] sets) {
 		this.sets = sets;
 	}
 
-	public boolean[] getDirty() {
-		return dirty;
-	}
-
-	public void setDirty(boolean[] dirty) {
-		this.dirty = dirty;
-	}
 
 }

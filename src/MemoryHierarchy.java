@@ -6,18 +6,10 @@ public class MemoryHierarchy {
 		return null;   //should call cacheLevels.getFirst().readWord()
 	}
 	
-	public Word readLine(int lineAddress){
-		return null;   //should call cacheLevels.getFirst().readLine()
-	}
-	
 	public void writeWord(int wordAddress, boolean[] wordData){
 		return ;   //should call cacheLevels.getFirst().writeWord()
 	}
 	
-	public void writeLine(int wordAddress, boolean[] lineData){
-		return ;   //should call cacheLevels.getFirst().writeLine()
-	}
-
 	public LinkedList<Cache> getCacheLevels() {
 		return cacheLevels;
 	}
