@@ -1,4 +1,3 @@
-
 public class Set {
 	private int m;
 	private CacheEntry[] entries;
@@ -7,7 +6,6 @@ public class Set {
 		this.m = m;
 		this.entries = new CacheEntry[m];
 	}
-
 	public int getM() {
 		return m;
 	}

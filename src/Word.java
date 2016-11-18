@@ -1,4 +1,3 @@
-
 public class Word {
 	private boolean[] bits;
 	
