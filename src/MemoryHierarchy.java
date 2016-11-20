@@ -9,6 +9,20 @@ public class MemoryHierarchy {
 	
 	
 	public Word readWord(int wordAddress){
+		LinkedList<Cache> tmp_cacheLevels = cacheLevels;
+		Cache firstCache = tmp_cacheLevels.getFirst();
+		Cache pointer = tmp_cacheLevels.removeFirst();
+		if(!pointer.equals(null)){
+			for(int i = 0; i < cacheLevels.size(); i++){
+				Word x = pointer.readWord(wordAddress);
+				if(!x.equals(null)){
+					firstCache.putInCache(wordAddress, x.getBits());
+					return x;
+				}
+			}
+		}
+		//In case we let class Memory
+		//Search in the memory
 		return null;   //should call cacheLevels.getFirst().readWord()
 	}
 	
