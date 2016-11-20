@@ -19,11 +19,7 @@ public class Cache{
 	}
 	
 	public Word readWord(int wordAddress){
-		CacheEntry x = findInCache(wordAddress);
-		Word [] words = x.getLineData();
-		int offset = (int)(Math.log(words.length)/Math.log(2));
-		return words[wordAddress % ((int) Math.pow(2, offset))];
-		//return null;   
+		return null;   
 	}
 	
 	public Word readLine(int lineAddress){
