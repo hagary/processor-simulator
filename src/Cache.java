@@ -19,9 +19,41 @@ public class Cache {
 	}
 	
 	public void writeWord(int wordAddress, boolean[] wordData){
+		int lineAddress = 0; // TODO some calculations here!
+		CacheEntry l = this.findInCache(lineAddress);
+		if( l == null )
+			this.writeMissHandler();
+		else
+			this.writeHitHandler();
 		return ;   
 	}
-	
+	private void writeMissHandler(){
+		if(writeMissPolicy == WriteMissPolicy.WRITEAROUND){
+			//TODO this.next.writeWord
+			return;
+		}
+		if(writeMissPolicy == WriteMissPolicy.WRITEALLOCATE){
+			//TODO this.next.readWord
+			//TODO this.putInCache
+			//TODO this.writeHitHandler
+		}
+	}
+	private void writeHitHandler(){
+		// TODO 1. modify line data in current cache level
+		// 2. check write policy
+		if(writeHitPolicy == WriteHitPolicy.WRITEBACK){
+			// TODO get cache entry
+			CacheEntry t =  new CacheEntry();
+			//set dirty bit
+			t.setDirty(true);
+			return;
+		}
+		if(writeHitPolicy == WriteHitPolicy.WRITETHROUGH){
+			//TODO this.next.writeWord
+			return;
+		}
+		
+	}
 	public void writeLine(int wordAddress, boolean[] lineData){
 		return ;   
 	}
