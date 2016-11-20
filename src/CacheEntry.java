@@ -2,12 +2,12 @@
 public class CacheEntry {
 	private boolean dirty;
 	private int tag;
-	private Word[] lineData;  //size of l
+	private Line line;  //size of l
 	
-	public CacheEntry(boolean dirty,int tag,Word[] lineData){
+	public CacheEntry(boolean dirty,int tag,Line lineData){
 		this.dirty=dirty;
 		this.tag=tag;
-		this.lineData=lineData;
+		this.line=lineData;
 	}
 	public boolean isDirty() {
 		return dirty;
@@ -21,11 +21,11 @@ public class CacheEntry {
 	public void setTag(int tag) {
 		this.tag = tag;
 	}
-	public Word[] getLineData() {
-		return lineData;
+	public Line getLine() {
+		return line;
 	}
-	public void setLineData(Word[] lineData) {
-		this.lineData = lineData;
+	public void setLine(Line lineData) {
+		this.line = lineData;
 	}
 
 }

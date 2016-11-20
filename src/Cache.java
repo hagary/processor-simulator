@@ -9,7 +9,17 @@ public class Cache{
 	private int m; //associativity
 	private int hitCycles;
 	private Set[] sets; //size=sets
+	private Cache nextLevel;
+	private Cache prevLevel;
 	
+	public Cache getNextLevel() {
+		return nextLevel;
+	}
+
+	public void setNextLevel(Cache nextLevel) {
+		this.nextLevel = nextLevel;
+	}
+
 	public Cache(int s,int l,int m,WriteHitPolicy writeHitPolicy,WriteMissPolicy writeMissPolicy){
 		this.s=s;
 		this.l=l;
@@ -112,6 +122,14 @@ public class Cache{
 
 	public void setSets(Set[] sets) {
 		this.sets = sets;
+	}
+
+	public Cache getPrevLevel() {
+		return prevLevel;
+	}
+
+	public void setPrevLevel(Cache prevLevel) {
+		this.prevLevel = prevLevel;
 	}
 
 
