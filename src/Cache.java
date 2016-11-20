@@ -1,5 +1,5 @@
 
-public class Cache{
+public class Cache {
 	private WriteHitPolicy writeHitPolicy;  //write hit policy enum
 	private WriteMissPolicy writeMissPolicy;  //write miss policy enum
 	private int s; //bytes
@@ -9,14 +9,6 @@ public class Cache{
 	private int m; //associativity
 	private int hitCycles;
 	private Set[] sets; //size=sets
-	
-	public Cache(int s,int l,int m,WriteHitPolicy writeHitPolicy,WriteMissPolicy writeMissPolicy){
-		this.s=s;
-		this.l=l;
-		this.m=m;
-		this.writeHitPolicy=writeHitPolicy;
-		this.writeMissPolicy=writeMissPolicy;
-	}
 	
 	public Word readWord(int wordAddress){
 		return null;   

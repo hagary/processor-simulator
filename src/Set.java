@@ -3,11 +3,6 @@ public class Set {
 	private int m;
 	private CacheEntry[] entries;
 	
-	public Set(int m,CacheEntry[] entries){
-		this.m=m;
-		this.entries=entries;
-	}
-	
 	public Set(int m){
 		this.m = m;
 		this.entries = new CacheEntry[m];
