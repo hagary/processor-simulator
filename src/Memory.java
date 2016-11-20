@@ -2,7 +2,7 @@
 public class Memory {
 private int s;
 private int l;
-private CacheEntry[] entries;
+private Line[] lines;
 
 public Memory(int l){
 	this.s=64*1024;
@@ -20,16 +20,16 @@ public int getL() {
 public void setL(int l) {
 	this.l = l;
 }
-public CacheEntry[] getEntries() {
-	return entries;
-}
-public void setEntries(CacheEntry[] entries) {
-	this.entries = entries;
-}
 
-public CacheEntry readInMemory(int lineAddress){
-	return entries[lineAddress];
+public Line readInMemory(int lineAddress){
+	return lines[lineAddress];
 	
+}
+public Line[] getLines() {
+	return lines;
+}
+public void setLines(Line[] lines) {
+	this.lines = lines;
 }
 
 

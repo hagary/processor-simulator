@@ -16,15 +16,17 @@ public class Simulator {
 		Type value2;		
 		System.out.println("Please Enter the number of caches you need");
 		int x=sc.nextInt();
-		System.out.println("Enter the line length of the caches ");
+		System.out.println("Enter the line length of the caches in words.");
 		int l=sc.nextInt();
 		memory=new MemoryHierarchy();
+		memory.setLineSize(l);
+		MemoryHierarchy.setMainMem(new Memory(l));
 		for(int i=0;i<x;i++){
 			int j=i+1;
-			System.out.println("Enter the size of cache " + j);
+			System.out.println("Enter the size of cache in words." + j);
 			s=sc.nextInt();
 			while(s<l || s%l!=0){
-				System.out.println("Enter another size of cache " + j);
+				System.out.println("Enter another size of cache(multiple of line size)" + j);
 				s=sc.nextInt();
 			}
 			System.out.println("Enter the associativity of cache " + j);
@@ -43,7 +45,6 @@ public class Simulator {
 			wM=WriteMissPolicy.valueOf(writeMiss.toUpperCase());
 			Cache c=new Cache(s,l,m,wH,wM);
 			memory.addCacheLevel(c);
-			
 			
 		}
 		

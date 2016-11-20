@@ -2,6 +2,18 @@ import java.awt.Window.Type;
 import java.util.*;
 public class MemoryHierarchy {
 	private LinkedList<Cache> cacheLevels ;
+	private int lineSize;
+	static private Memory mainMem;
+
+	public int getLineSize() {
+		return lineSize;
+	}
+
+
+	public void setLineSize(int lineSize) {
+		this.lineSize = lineSize;
+	}
+
 
 	public MemoryHierarchy(){
 		this.cacheLevels= new LinkedList<Cache>();
@@ -9,7 +21,9 @@ public class MemoryHierarchy {
 
 
 	public Word readWord(int wordAddress){
-		return null;   //should call cacheLevels.getFirst().readWord()
+		int lineAddress = lineAddress(wordAddress);
+		Line l = cacheLevels.getFirst().readLine(lineAddress);
+		return l.getWord(wordAddress); 
 	}
 
 	public void writeWord(int wordAddress, boolean[] wordData){
@@ -31,6 +45,18 @@ public class MemoryHierarchy {
 		}
 		cacheLevels.add(c);
 	}
+	public int lineAddress(int wordAddress){
+		return wordAddress/lineSize;
+	}
 
+
+	public static Memory getMainMem() {
+		return mainMem;
+	}
+
+
+	public static void setMainMem(Memory mainMem) {
+		MemoryHierarchy.mainMem = mainMem;
+	}
 
 }

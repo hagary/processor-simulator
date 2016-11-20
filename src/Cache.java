@@ -2,16 +2,16 @@
 public class Cache{
 	private WriteHitPolicy writeHitPolicy;  //write hit policy enum
 	private WriteMissPolicy writeMissPolicy;  //write miss policy enum
-	private int s; //bytes
+	private int s; //words
 	private int numSets;  //lines/m
-	private int l; //bytes
-	private int lines; //#blocks = s/l
+	private int l; // line size in words 
+	private int lines; //#blocks = s/l number of lines
 	private int m; //associativity
 	private int hitCycles;
 	private Set[] sets; //size=sets
 	private Cache nextLevel;
 	private Cache prevLevel;
-	
+
 	public Cache getNextLevel() {
 		return nextLevel;
 	}
@@ -27,28 +27,46 @@ public class Cache{
 		this.writeHitPolicy=writeHitPolicy;
 		this.writeMissPolicy=writeMissPolicy;
 	}
-	
-	public Word readWord(int wordAddress){
-		return null;   
+
+	public Line readLine(int lineAddress){
+		CacheEntry ce = this.findInCache(lineAddress);
+		if(ce == null) //miss
+		{	
+			Line targetLine;
+			//Is this the last level?
+			if(this.getNextLevel() == null)
+			{
+				//read it from main memory
+				//TODO return a copy of line instead of reference
+				targetLine = MemoryHierarchy.getMainMem().readInMemory(lineAddress);				
+			}
+			else
+			{
+				targetLine = this.getNextLevel().readLine(lineAddress);
+			}
+			//insert it in correct position in current cache
+			this.putInCache(lineAddress, targetLine);
+			return targetLine;
+		}
+		else //hit
+		{
+			return ce.getLine();
+		}
 	}
-	
-	public Word readLine(int lineAddress){
-		return null;   
-	}
-	
+
 	public void writeWord(int wordAddress, boolean[] wordData){
 		return ;   
 	}
-	
+
 	public void writeLine(int wordAddress, boolean[] lineData){
 		return ;   
 	}
-	
+
 	public CacheEntry findInCache(int lineAddress){
 		return null;
 	}
-	
-	public void putInCache(int address, boolean[] line){
+
+	public void putInCache(int address, Line line){
 		return;
 	}
 
@@ -59,7 +77,7 @@ public class Cache{
 	public void setWriteHitPolicy(WriteHitPolicy writeHitPolicy) {
 		this.writeHitPolicy = writeHitPolicy;
 	}
-	
+
 	public WriteMissPolicy getWriteMissPolicy() {
 		return writeMissPolicy;
 	}
@@ -132,5 +150,7 @@ public class Cache{
 		this.prevLevel = prevLevel;
 	}
 
-
+	public int lineAddress(int wordAddress){
+		return wordAddress/l;
+	}
 }

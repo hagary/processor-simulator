@@ -2,6 +2,10 @@
 public class Line {
 	private Word[] lineData; //size of l
 	public Line(int l){
-		lineData = new Word[l/2]; //l/2:number of words (word = 2 bytes)
+		lineData = new Word[l]; //l is in words
+	}
+	public Word getWord(int wordAdress){
+		int wordIndex  = wordAdress % lineData.length;
+		return lineData[wordIndex];
 	}
 }
