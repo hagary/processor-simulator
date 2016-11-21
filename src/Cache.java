@@ -59,11 +59,36 @@ public class Cache{
 	}
 
 	public void writeLine(int wordAddress, boolean[] lineData){
-		return ;   
+		return;   
 	}
-
+	
 	public CacheEntry findInCache(int lineAddress){
-		return null;
+		
+		//divide address into tag & index dependent on m
+		int setIndex = lineAddress % m;
+		int tag;
+		
+		//TODO get tag as value
+		if(m == lines) //fully associative --> no index
+		{
+			tag = lineAddress;
+		}
+		else{
+			tag = lineAddress / numSets;
+		}
+		
+		Set targetSet = sets[setIndex];
+		CacheEntry[] setEntries = targetSet.getEntries();
+		
+		for( int i = 0; i < setEntries.length; i++)
+		{
+			CacheEntry c = setEntries[i];
+			int cacheTag = c.getTag();
+			if(cacheTag == tag){ //hit
+				return c;
+			}
+		}
+		return null; //miss
 	}
 
 	public void putInCache(int address, Line line){
