@@ -67,9 +67,59 @@ public class Cache{
 	}
 
 	public void putInCache(int address, Line line){
+		int index = address%numSets;
+		int tag = address/numSets;
+		
+		// Initializing the new cache entry to be inserted
+		CacheEntry newCacheEntry = new CacheEntry(false,tag,line);
+		
+		Set targetSet = sets[index];
+		CacheEntry[] setEntries = targetSet.getEntries();
+		
+		for (int i=0;i<targetSet.getM();i++)
+		{
+			if (setEntries[i]==null) // Found Empty slot, No Replacement needed
+			{
+				setEntries[i] = newCacheEntry;
+				this.getPrevLevel().putInCache(address, line);
+				return;
+			}
+		}
+		// Replace 
+		int replacmentIndex = (int) Math.random() * targetSet.getM(); 	
+		CacheEntry repEntry = setEntries[replacmentIndex];
+		//Get the line address of the cache entry to be removed
+		int remAdrress = repEntry.getTag()*numSets + index;
+		removeFromCache(remAdrress);
+		setEntries[replacmentIndex] = newCacheEntry;
+		this.getPrevLevel().putInCache(address, line);
 		return;
 	}
-
+	public void removeFromCache(int address){
+		// Remove from upper cache levels
+		this.getPrevLevel().removeFromCache(address);
+		
+		int index = address%numSets;
+		int tag = address/numSets;
+		Set targetSet = sets[index];
+		CacheEntry[] setEntries = targetSet.getEntries();
+		for (int i=0;i<targetSet.getM();i++)
+		{
+			CacheEntry current = setEntries[i];
+			if (current.getTag()==tag)
+			{
+				//If the policy is write back then we have to propagate to lower levels
+				if (current.isDirty() && this.getWriteHitPolicy()==WriteHitPolicy.WRITEBACK)
+				{
+					// TODO 
+					this.getNextLevel().writeLine(address, null);
+				}
+				//nullify the cacheEntry to be removed
+				setEntries[i] = null;
+				break;
+			}
+		}
+	}
 	public WriteHitPolicy getWriteHitPolicy() {
 		return writeHitPolicy;
 	}
