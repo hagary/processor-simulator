@@ -65,17 +65,16 @@ public class Cache{
 	public CacheEntry findInCache(int lineAddress){
 		
 		//divide address into tag & index dependent on m
-		int setIndex = lineAddress % m;
-		int tag;
+		int setIndex = lineAddress % numSets;
+		int tag = lineAddress / numSets;
 		
-		//TODO get tag as value
-		if(m == lines) //fully associative --> no index
+		/*if(m == lines) //fully associative --> no index
 		{
 			tag = lineAddress;
 		}
 		else{
 			tag = lineAddress / numSets;
-		}
+		}*/
 		
 		Set targetSet = sets[setIndex];
 		CacheEntry[] setEntries = targetSet.getEntries();
