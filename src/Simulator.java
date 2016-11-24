@@ -6,7 +6,9 @@ public class Simulator {
 	static MemoryHierarchy dataMem;
 	static MemoryHierarchy instructionsMem;
 	public static void main (String[]args){
-		Scanner sc=new Scanner(System.in);
+		/* --------REQUIRED INPUT -----------*/
+		int numCaches;
+		int lineSize;
 		int s;
 		int m;
 		WriteHitPolicy wH;
@@ -16,27 +18,44 @@ public class Simulator {
 		Type value;
 		Type value2;	
 		int hitCycles;
+		/*--------------END------------------*/
+		Scanner sc=new Scanner(System.in);
+		
 		System.out.println("Please Enter the number of caches you need");
-		int x=sc.nextInt();
+		numCaches=sc.nextInt();
+		
 		System.out.println("Enter the line length of the caches in words.");
-		int l=sc.nextInt();
-		memory=new MemoryHierarchy();
-		memory.setLineSize(l);
-		MemoryHierarchy.setMainMem(new Memory(l));
-		for(int i=0;i<x;i++){
+		lineSize=sc.nextInt();
+		
+		//MAIN MEMORY
+		MemoryHierarchy.setMainMem(new Memory(lineSize));
+		//DATA MEMORY
+		dataMem = new MemoryHierarchy(lineSize);
+		//INSTRUCTIONS MEMORY
+		instructionsMem = new MemoryHierarchy(lineSize);
+		
+		
+		for(int i=0;i<numCaches;i++){
 			int j=i+1;
+			/* ----------- Input : Cache Size -------------*/
 			System.out.println("Enter the size of cache in words." + j);
 			s=sc.nextInt();
-			while(s<l || s%l!=0){
+			//validate input
+			while(s<lineSize || s%lineSize!=0){
 				System.out.println("Enter the size of cache again!(multiple of line size)" + j);
 				s=sc.nextInt();
 			}
+			
+			/* ----------- Input : Associativity -------------*/
 			System.out.println("Enter the associativity of cache " + j);
 			m=sc.nextInt();
+			//validate input
 			while(s%m!=0){
 				System.out.println("Enter associativity of cache again! (divides cache size)" + j);
 				m=sc.nextInt();
 			}
+			
+			/* ----------- Input : Write Policies -------------*/
 			System.out.println("Enter the write hit policy of cache Writeback/Writethrough" + j);
 			writeHit=sc.next();
 			writeHit.replaceAll("\\s+", "");
@@ -45,10 +64,17 @@ public class Simulator {
 			writeMiss=sc.next();
 			writeMiss.replaceAll("\\s+", "");
 			wM=WriteMissPolicy.valueOf(writeMiss.toUpperCase());
+			
+			/* ----------- Input : Hit Cycles -------------*/
 			System.out.println("Enter the number of hit cycles of cache" + j);
 			hitCycles=sc.nextInt();
-			Cache c=new Cache(s,l,m,wH,wM);
-			memory.addCacheLevel(c);
+			
+			/* ----------- Initialize Cache Levels -------------*/
+			Cache cData = new Cache(s, lineSize, m, wH, wM, hitCycles);
+			Cache cInstructions = new Cache(s, lineSize, m, wH, wM, hitCycles);
+
+			dataMem.addCacheLevel(cData);
+			instructionsMem.addCacheLevel(cInstructions);
 			
 		}
 		

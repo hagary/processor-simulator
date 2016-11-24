@@ -4,6 +4,10 @@ public class MemoryHierarchy {
 	private LinkedList<Cache> cacheLevels ;
 	private int lineSize;
 	static private Memory mainMem;
+	public MemoryHierarchy(int lineSize){
+		this.cacheLevels= new LinkedList<Cache>();
+		this.lineSize = lineSize;
+	}
 
 	public int getLineSize() {
 		return lineSize;
@@ -13,12 +17,6 @@ public class MemoryHierarchy {
 	public void setLineSize(int lineSize) {
 		this.lineSize = lineSize;
 	}
-
-
-	public MemoryHierarchy(){
-		this.cacheLevels= new LinkedList<Cache>();
-	}
-
 
 	public Word readWord(int wordAddress){
 		int lineAddress = lineAddress(wordAddress);
