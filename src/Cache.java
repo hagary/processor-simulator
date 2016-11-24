@@ -1,23 +1,59 @@
 
-public class Cache {
+public class Cache{
 	private WriteHitPolicy writeHitPolicy;  //write hit policy enum
 	private WriteMissPolicy writeMissPolicy;  //write miss policy enum
-	private int s; //bytes
+	private int s; //words
 	private int numSets;  //lines/m
-	private int l; //bytes
-	private int lines; //#blocks = s/l
+	private int l; // line size in words
+	private int lines; //#blocks = s/l number of lines
 	private int m; //associativity
 	private int hitCycles;
 	private Set[] sets; //size=sets
-	
-	public Word readWord(int wordAddress){
-		return null;   
+	private Cache nextLevel;
+	private Cache prevLevel;
+
+	public Cache getNextLevel() {
+		return nextLevel;
 	}
-	
-	public Word readLine(int lineAddress){
-		return null;   
+
+	public void setNextLevel(Cache nextLevel) {
+		this.nextLevel = nextLevel;
 	}
-	
+
+	public Cache(int s,int l,int m,WriteHitPolicy writeHitPolicy,WriteMissPolicy writeMissPolicy){
+		this.s=s;
+		this.l=l;
+		this.m=m;
+		this.writeHitPolicy=writeHitPolicy;
+		this.writeMissPolicy=writeMissPolicy;
+	}
+
+	public Line readLine(int lineAddress){
+		CacheEntry ce = this.findInCache(lineAddress);
+		if(ce == null) //miss
+		{
+			Line targetLine;
+			//Is this the last level?
+			if(this.getNextLevel() == null)
+			{
+				//read it from main memory
+				//TODO return a copy of line instead of reference
+				targetLine = MemoryHierarchy.getMainMem().readInMemory(lineAddress);
+			}
+			else
+			{
+				targetLine = this.getNextLevel().readLine(lineAddress);
+			}
+			//insert it in correct position in current cache
+			this.putInCache(lineAddress, targetLine);
+			return targetLine;
+		}
+		else //hit
+		{
+			return ce.getLine();
+		}
+	}
+
 	public void writeWord(int wordAddress, boolean[] wordData){
 		int lineAddress = 0; // TODO some calculations here!
 		CacheEntry l = this.findInCache(lineAddress);
@@ -25,7 +61,7 @@ public class Cache {
 			this.writeMissHandler();
 		else
 			this.writeHitHandler();
-		return ;   
+		return ;
 	}
 	private void writeMissHandler(){
 		if(writeMissPolicy == WriteMissPolicy.WRITEAROUND){
@@ -52,17 +88,41 @@ public class Cache {
 			//TODO this.next.writeWord
 			return;
 		}
-		
+
 	}
 	public void writeLine(int wordAddress, boolean[] lineData){
-		return ;   
+		return;
 	}
-	
+
 	public CacheEntry findInCache(int lineAddress){
-		return null;
+
+		//divide address into tag & index dependent on m
+		int setIndex = lineAddress % numSets;
+		int tag = lineAddress / numSets;
+
+		/*if(m == lines) //fully associative --> no index
+		{
+			tag = lineAddress;
+		}
+		else{
+			tag = lineAddress / numSets;
+		}*/
+
+		Set targetSet = sets[setIndex];
+		CacheEntry[] setEntries = targetSet.getEntries();
+
+		for( int i = 0; i < setEntries.length; i++)
+		{
+			CacheEntry c = setEntries[i];
+			int cacheTag = c.getTag();
+			if(cacheTag == tag){ //hit
+				return c;
+			}
+		}
+		return null; //miss
 	}
-	
-	public void putInCache(int address, boolean[] line){
+
+	public void putInCache(int address, Line line){
 		return;
 	}
 
@@ -73,7 +133,7 @@ public class Cache {
 	public void setWriteHitPolicy(WriteHitPolicy writeHitPolicy) {
 		this.writeHitPolicy = writeHitPolicy;
 	}
-	
+
 	public WriteMissPolicy getWriteMissPolicy() {
 		return writeMissPolicy;
 	}
@@ -138,5 +198,15 @@ public class Cache {
 		this.sets = sets;
 	}
 
+	public Cache getPrevLevel() {
+		return prevLevel;
+	}
 
+	public void setPrevLevel(Cache prevLevel) {
+		this.prevLevel = prevLevel;
+	}
+
+	public int lineAddress(int wordAddress){
+		return wordAddress/l;
+	}
 }
