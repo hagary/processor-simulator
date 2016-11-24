@@ -22,12 +22,13 @@ public class Cache{
 		this.nextLevel = nextLevel;
 	}
 
-	public Cache(int s,int l,int m,WriteHitPolicy writeHitPolicy,WriteMissPolicy writeMissPolicy){
+	public Cache(int s,int l,int m,WriteHitPolicy writeHitPolicy,WriteMissPolicy writeMissPolicy, int hitCycles){
 		this.s=s;
 		this.l=l;
 		this.m=m;
 		this.writeHitPolicy=writeHitPolicy;
 		this.writeMissPolicy=writeMissPolicy;
+		this.hitCycles = hitCycles;
 	}
 	public Word readWord(int wordAddress){
 		int lineAddress = wordAddress / l;
