@@ -1,5 +1,7 @@
+import java.io.Serializable;
+import org.apache.commons.lang3.SerializationUtils;
 
-public class Line {
+public class Line implements Serializable{
 	private Word[] lineData; //size of l
 	
 	public Line(int l){
@@ -13,7 +15,7 @@ public class Line {
 	//TODO deep copy
 	public void modifyLine(int wordAddress, Word word){
 		int wordIndex = wordAddress % lineData.length;
-		lineData[wordIndex] = word;
+		lineData[wordIndex] = SerializationUtils.clone(word);
 	}
 	
 	public int getLineSize(){
