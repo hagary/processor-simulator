@@ -19,13 +19,12 @@ public class MemoryHierarchy {
 	}
 
 	public Word readWord(int wordAddress){
-		int lineAddress = lineAddress(wordAddress);
-		Line l = cacheLevels.getFirst().readLine(lineAddress);
-		return l.getWord(wordAddress); 
+		return cacheLevels.getFirst().readWord(wordAddress);
 	}
 
-	public void writeWord(int wordAddress, boolean[] wordData){
-		return ;   //should call cacheLevels.getFirst().writeWord()
+	public void writeWord(int wordAddress, Word wordToWrite){
+		cacheLevels.getFirst().writeWord(wordAddress, wordToWrite);
+		return ;
 	}
 
 	public LinkedList<Cache> getCacheLevels() {
