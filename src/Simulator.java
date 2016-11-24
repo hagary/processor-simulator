@@ -7,6 +7,7 @@ public class Simulator {
 	static MemoryHierarchy instructionsMem;
 	public static void main (String[]args){
 		/* --------REQUIRED INPUT -----------*/
+		int memCycles; //main memory hit cycles
 		int numCaches;
 		int lineSize;
 		int s;
@@ -21,14 +22,17 @@ public class Simulator {
 		/*--------------END------------------*/
 		Scanner sc=new Scanner(System.in);
 		
-		System.out.println("Please Enter the number of caches you need");
+		System.out.println("Please enter the number of cycles needed to access the main memory");
+		memCycles=sc.nextInt();
+		
+		System.out.println("Please enter the number of caches you need");
 		numCaches=sc.nextInt();
 		
 		System.out.println("Enter the line length of the caches in words.");
 		lineSize=sc.nextInt();
 		
 		//MAIN MEMORY
-		MemoryHierarchy.setMainMem(new Memory(lineSize));
+		MemoryHierarchy.setMainMem(new Memory(lineSize,memCycles));
 		//DATA MEMORY
 		dataMem = new MemoryHierarchy(lineSize);
 		//INSTRUCTIONS MEMORY

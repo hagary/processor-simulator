@@ -4,6 +4,7 @@ public class MemoryHierarchy {
 	private LinkedList<Cache> cacheLevels ;
 	private int lineSize;
 	static private Memory mainMem;
+	
 	public MemoryHierarchy(int lineSize){
 		this.cacheLevels= new LinkedList<Cache>();
 		this.lineSize = lineSize;
