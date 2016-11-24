@@ -1,5 +1,7 @@
+import java.io.Serializable;
 
-public class Set {
+
+public class Set implements Serializable {
 	private int m;
 	private CacheEntry[] entries;
 	
