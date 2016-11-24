@@ -55,7 +55,7 @@ public class Cache{
 			targetLine = SerializationUtils.clone(targetLine);
 			//insert it in correct position in current cache
 			this.putInCache(lineAddress, targetLine);
-			return targetLine;
+			return this.readLine(lineAddress); //it should now become a hit
 		}
 		else //hit
 		{
