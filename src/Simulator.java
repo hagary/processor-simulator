@@ -1,6 +1,12 @@
-package memory;
+
 import java.awt.Window.Type;
 import java.util.Scanner;
+
+import memory.Cache;
+import memory.Memory;
+import memory.MemoryHierarchy;
+import memory.WriteHitPolicy;
+import memory.WriteMissPolicy;
 
 
 public class Simulator {
