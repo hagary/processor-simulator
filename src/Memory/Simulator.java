@@ -1,3 +1,4 @@
+package Memory;
 import java.awt.Window.Type;
 import java.util.Scanner;
 
@@ -16,8 +17,6 @@ public class Simulator {
 		WriteMissPolicy wM;
 		String writeHit;
 		String writeMiss;
-		Type value;
-		Type value2;	
 		int hitCycles;
 		/*--------------END------------------*/
 		Scanner sc=new Scanner(System.in);

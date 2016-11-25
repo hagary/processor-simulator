@@ -1,3 +1,4 @@
+package Memory;
 
 public class CacheEntry {
 	private boolean dirty;
