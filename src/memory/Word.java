@@ -1,4 +1,4 @@
-package Memory;
+package memory;
 import java.io.Serializable;
 
 

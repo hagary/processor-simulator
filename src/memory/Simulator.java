@@ -1,4 +1,4 @@
-package Memory;
+package memory;
 import java.awt.Window.Type;
 import java.util.Scanner;
 

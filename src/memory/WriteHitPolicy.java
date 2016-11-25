@@ -1,4 +1,4 @@
-package Memory;
+package memory;
 
 public enum WriteHitPolicy {
 	WRITEBACK, WRITETHROUGH;

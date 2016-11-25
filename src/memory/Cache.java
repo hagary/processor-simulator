@@ -1,4 +1,4 @@
-package Memory;
+package memory;
 import org.apache.commons.lang3.SerializationUtils;
 
 
