@@ -86,13 +86,12 @@ public class Cache{
 			}
 		}
 		// Replace 
-		int replacmentIndex = (int) Math.random() * targetSet.getM(); 	
+		int replacmentIndex = 0; 	
 		CacheEntry repEntry = setEntries[replacmentIndex];
 		//Get the line address of the cache entry to be removed
-		int remAdrress = repEntry.getTag()*numSets + index;
-		removeFromCache(remAdrress);
+		int remAddress = repEntry.getTag()*numSets + index;
+		removeFromCache(remAddress);
 		setEntries[replacmentIndex] = newCacheEntry;
-		this.getPrevLevel().putInCache(address, line);
 		return;
 	}
 	public void removeFromCache(int address){
@@ -110,15 +109,19 @@ public class Cache{
 			{
 				//If the policy is write back then we have to propagate to lower levels
 				if (current.isDirty() && this.getWriteHitPolicy()==WriteHitPolicy.WRITEBACK)
-				{
-					// TODO 
-					this.getNextLevel().writeLine(address, null);
-				}
+					this.getNextLevel().writeLine(address, current.getLine());
 				//nullify the cacheEntry to be removed
 				setEntries[i] = null;
 				break;
 			}
 		}
+	}
+	//this method is used in the lazy propagation of the write back 
+	public void writeLine(int lineAddress, Line lineToWrite)
+	{
+		CacheEntry cacheEntry = this.findInCache(lineAddress);
+		if (cacheEntry!=null)
+			cacheEntry.setLine(lineToWrite);
 	}
 	public WriteHitPolicy getWriteHitPolicy() {
 		return writeHitPolicy;
