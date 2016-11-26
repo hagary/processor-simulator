@@ -1,4 +1,6 @@
 package memory;
+
+
 import org.apache.commons.lang3.SerializationUtils;
 
 
@@ -131,8 +133,62 @@ public class Cache{
 	}
 
 	public void putInCache(int address, Line line){
+		int index = address%numSets;
+		int tag = address/numSets;
+		
+		// Initializing the new cache entry to be inserted
+		CacheEntry newCacheEntry = new CacheEntry(false,tag,line);
+		
+		Set targetSet = sets[index];
+		CacheEntry[] setEntries = targetSet.getEntries();
+		
+		for (int i=0;i<targetSet.getM();i++)
+		{
+			if (setEntries[i]==null) // Found Empty slot, No Replacement needed
+			{
+				setEntries[i] = newCacheEntry;
+				return;
+			}
+		}
+		// Replace 
+		int replacmentIndex = 0; 	
+		CacheEntry repEntry = setEntries[replacmentIndex];
+		//Get the line address of the cache entry to be removed
+		int remAddress = repEntry.getTag()*numSets + index;
+		removeFromCache(remAddress);
+		setEntries[replacmentIndex] = newCacheEntry;
 		return;
 	}
+	public void removeFromCache(int lineAddress){
+		// Remove from upper cache levels
+		if (this.getPrevLevel()!=null)
+			this.getPrevLevel().removeFromCache(lineAddress);
+		
+		int index = lineAddress%numSets;
+		int tag = lineAddress/numSets;
+		Set targetSet = sets[index];
+		CacheEntry[] setEntries = targetSet.getEntries();
+		for (int i=0;i<targetSet.getM();i++)
+		{
+			CacheEntry current = setEntries[i];
+			if (current.getTag()==tag)
+			{
+				Line newLine = SerializationUtils.clone(current.getLine());
+				//If the policy is write back then we have to propagate to lower levels
+				if (current.isDirty() && this.getWriteHitPolicy()==WriteHitPolicy.WRITEBACK)
+				{
+					if (this.getNextLevel()==null)
+						MemoryHierarchy.getMainMem().putInMemory(lineAddress, newLine);
+					else 		
+						this.getNextLevel().writeLine(lineAddress, current.getLine());
+				}
+				//nullify the cacheEntry to be removed
+				setEntries[i] = null;
+				break;
+			}
+		}
+	}
+	
 
 	public WriteHitPolicy getWriteHitPolicy() {
 		return writeHitPolicy;

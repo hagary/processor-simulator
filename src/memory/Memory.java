@@ -1,4 +1,6 @@
 package memory;
+import Line;
+
 import org.apache.commons.lang3.SerializationUtils;
 
 
@@ -29,6 +31,10 @@ public class Memory {
 	public Line readInMemory(int lineAddress){
 		return SerializationUtils.clone(lines[lineAddress]);
 
+	}
+	public void putInMemory(int lineAddress, Line line)
+	{
+		lines[lineAddress] = line;
 	}
 	public Line[] getLines() {
 		return lines;
