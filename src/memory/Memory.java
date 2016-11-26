@@ -1,3 +1,6 @@
+package memory;
+import org.apache.commons.lang3.SerializationUtils;
+
 
 public class Memory {
 	private int s;
@@ -24,7 +27,7 @@ public class Memory {
 	}
 
 	public Line readInMemory(int lineAddress){
-		return lines[lineAddress];
+		return SerializationUtils.clone(lines[lineAddress]);
 
 	}
 	public Line[] getLines() {

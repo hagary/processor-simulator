@@ -1,3 +1,4 @@
+package memory;
 import java.awt.Window.Type;
 import java.util.*;
 public class MemoryHierarchy {

@@ -1,3 +1,4 @@
+package memory;
 import org.apache.commons.lang3.SerializationUtils;
 
 
@@ -37,7 +38,7 @@ public class Cache{
 		return w;
 	}
 	public Line readLine(int lineAddress){
-		CacheEntry ce = this.findInCache(lineAddress);
+		CacheEntry ce = this.findInCache(lineAddress); //TODO returns hit cycles
 		if(ce == null) //miss
 		{
 			Line targetLine;
@@ -45,21 +46,25 @@ public class Cache{
 			if(this.getNextLevel() == null)
 			{
 				//read it from main memory
+				//TODO increment access cycles with that returned from readInMemory
 				targetLine = MemoryHierarchy.getMainMem().readInMemory(lineAddress);
 			}
 			else
 			{
+				//TODO increment access cycles with that returned from readLine
 				targetLine = this.getNextLevel().readLine(lineAddress);
 			}
 			//create a deep copy
 			targetLine = SerializationUtils.clone(targetLine);
 			//insert it in correct position in current cache
 			this.putInCache(lineAddress, targetLine);
-			return targetLine;
+			//TODO increment access cycles with that returned from readLine
+			return this.readLine(lineAddress); //it should now become a hit
 		}
 		else //hit
 		{
 			//return a deep copy
+			//TODO return total cycles calculated ^^
 			return SerializationUtils.clone(ce.getLine());
 		}
 	}
