@@ -188,7 +188,12 @@ public class Cache{
 			}
 		}
 	}
-	
+	public void writeLine(int lineAddress, Line lineToWrite)
+	{
+		CacheEntry cacheEntry = this.findInCache(lineAddress);
+		if (cacheEntry!=null)
+			cacheEntry.setLine(lineToWrite);
+	}
 
 	public WriteHitPolicy getWriteHitPolicy() {
 		return writeHitPolicy;
