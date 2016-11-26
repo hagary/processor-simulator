@@ -81,7 +81,6 @@ public class Cache{
 			if (setEntries[i]==null) // Found Empty slot, No Replacement needed
 			{
 				setEntries[i] = newCacheEntry;
-				this.getPrevLevel().putInCache(address, line);
 				return;
 			}
 		}
@@ -94,12 +93,13 @@ public class Cache{
 		setEntries[replacmentIndex] = newCacheEntry;
 		return;
 	}
-	public void removeFromCache(int address){
+	public void removeFromCache(int lineAddress){
 		// Remove from upper cache levels
-		this.getPrevLevel().removeFromCache(address);
+		if (this.getPrevLevel()!=null)
+			this.getPrevLevel().removeFromCache(lineAddress);
 		
-		int index = address%numSets;
-		int tag = address/numSets;
+		int index = lineAddress%numSets;
+		int tag = lineAddress/numSets;
 		Set targetSet = sets[index];
 		CacheEntry[] setEntries = targetSet.getEntries();
 		for (int i=0;i<targetSet.getM();i++)
@@ -107,9 +107,15 @@ public class Cache{
 			CacheEntry current = setEntries[i];
 			if (current.getTag()==tag)
 			{
+				Line newLine = SerializationUtils.clone(current.getLine());
 				//If the policy is write back then we have to propagate to lower levels
 				if (current.isDirty() && this.getWriteHitPolicy()==WriteHitPolicy.WRITEBACK)
-					this.getNextLevel().writeLine(address, current.getLine());
+				{
+					if (this.getNextLevel()==null)
+						MemoryHierarchy.getMainMem().putInMemory(lineAddress, newLine);
+					else 		
+						this.getNextLevel().writeLine(lineAddress, current.getLine());
+				}
 				//nullify the cacheEntry to be removed
 				setEntries[i] = null;
 				break;

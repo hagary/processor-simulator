@@ -25,6 +25,11 @@ public Line readInMemory(int lineAddress){
 	return lines[lineAddress];
 	
 }
+
+public void putInMemory(int lineAddress, Line line)
+{
+	lines[lineAddress] = line;
+}
 public Line[] getLines() {
 	return lines;
 }
