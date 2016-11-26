@@ -1,10 +1,15 @@
+package memory;
+
+
+import org.apache.commons.lang3.SerializationUtils;
+
 
 public class Cache{
 	private WriteHitPolicy writeHitPolicy;  //write hit policy enum
 	private WriteMissPolicy writeMissPolicy;  //write miss policy enum
 	private int s; //words
 	private int numSets;  //lines/m
-	private int l; // line size in words 
+	private int l; // line size in words
 	private int lines; //#blocks = s/l number of lines
 	private int m; //associativity
 	private int hitCycles;
@@ -20,50 +25,111 @@ public class Cache{
 		this.nextLevel = nextLevel;
 	}
 
-	public Cache(int s,int l,int m,WriteHitPolicy writeHitPolicy,WriteMissPolicy writeMissPolicy){
+	public Cache(int s,int l,int m,WriteHitPolicy writeHitPolicy,WriteMissPolicy writeMissPolicy, int hitCycles){
 		this.s=s;
 		this.l=l;
 		this.m=m;
 		this.writeHitPolicy=writeHitPolicy;
 		this.writeMissPolicy=writeMissPolicy;
+		this.hitCycles = hitCycles;
 	}
-
+	public Word readWord(int wordAddress){
+		int lineAddress = wordAddress / l;
+		Line line = readLine(lineAddress);
+		Word w = line.getWord(wordAddress);
+		return w;
+	}
 	public Line readLine(int lineAddress){
-		CacheEntry ce = this.findInCache(lineAddress);
+		CacheEntry ce = this.findInCache(lineAddress); //TODO returns hit cycles
 		if(ce == null) //miss
-		{	
+		{
 			Line targetLine;
 			//Is this the last level?
 			if(this.getNextLevel() == null)
 			{
 				//read it from main memory
-				//TODO return a copy of line instead of reference
-				targetLine = MemoryHierarchy.getMainMem().readInMemory(lineAddress);				
+				//TODO increment access cycles with that returned from readInMemory
+				targetLine = MemoryHierarchy.getMainMem().readInMemory(lineAddress);
 			}
 			else
 			{
+				//TODO increment access cycles with that returned from readLine
 				targetLine = this.getNextLevel().readLine(lineAddress);
 			}
+			//create a deep copy
+			targetLine = SerializationUtils.clone(targetLine);
 			//insert it in correct position in current cache
 			this.putInCache(lineAddress, targetLine);
-			return targetLine;
+			//TODO increment access cycles with that returned from readLine
+			return this.readLine(lineAddress); //it should now become a hit
 		}
 		else //hit
 		{
-			return ce.getLine();
+			//return a deep copy
+			//TODO return total cycles calculated ^^
+			return SerializationUtils.clone(ce.getLine());
 		}
 	}
 
-	public void writeWord(int wordAddress, boolean[] wordData){
-		return ;   
+	public void writeWord(int wordAddress, Word wordToWrite){
+		int lineAddress = wordAddress/l;
+		CacheEntry cacheEntry = this.findInCache(lineAddress);
+		if( cacheEntry == null )
+			this.writeMissHandler(wordAddress, wordToWrite);
+		else
+			this.writeHitHandler(wordAddress, wordToWrite,cacheEntry);
+		return ;
 	}
+	private void writeMissHandler(int wordAddress, Word wordToWrite){
+		if(writeMissPolicy == WriteMissPolicy.WRITEAROUND){
+			this.nextLevel.writeWord(wordAddress, wordToWrite);
+			return;
+		}
+		if(writeMissPolicy == WriteMissPolicy.WRITEALLOCATE){
+			//get equivalent line address
+			int lineAddress = wordAddress / l;
+			//fetch it from next level
+			Line line = this.nextLevel.readLine(lineAddress);
+			//insert it in current level
+			this.putInCache(lineAddress, line);
+			//treat it as write hit
+			this.writeWord(wordAddress, wordToWrite);
+		}
+	}
+	private void writeHitHandler(int wordAddress, Word wordToWrite, CacheEntry targetCE){
+		// 1. modify line data in current cache level
+		targetCE.getLine().modifyLine(wordAddress, wordToWrite);
+		// 2. check write policy
+		if(writeHitPolicy == WriteHitPolicy.WRITEBACK){
+			//set dirty bit
+			targetCE.setDirty(true);
+			return;
+		}
+		if(writeHitPolicy == WriteHitPolicy.WRITETHROUGH){
+			this.nextLevel.writeWord(wordAddress, wordToWrite);
+			return;
+		}
 
-	public void writeLine(int wordAddress, boolean[] lineData){
-		return ;   
 	}
 
 	public CacheEntry findInCache(int lineAddress){
-		return null;
+
+		//divide address into tag & index dependent on m
+		int setIndex = lineAddress % numSets;
+		int tag = lineAddress / numSets;
+
+		Set targetSet = sets[setIndex];
+		CacheEntry[] setEntries = targetSet.getEntries();
+
+		for( int i = 0; i < setEntries.length; i++)
+		{
+			CacheEntry c = setEntries[i];
+			int cacheTag = c.getTag();
+			if(cacheTag == tag){ //hit
+				return c;
+			}
+		}
+		return null; //miss
 	}
 
 	public void putInCache(int address, Line line){
@@ -122,13 +188,8 @@ public class Cache{
 			}
 		}
 	}
-	//this method is used in the lazy propagation of the write back 
-	public void writeLine(int lineAddress, Line lineToWrite)
-	{
-		CacheEntry cacheEntry = this.findInCache(lineAddress);
-		if (cacheEntry!=null)
-			cacheEntry.setLine(lineToWrite);
-	}
+	
+
 	public WriteHitPolicy getWriteHitPolicy() {
 		return writeHitPolicy;
 	}

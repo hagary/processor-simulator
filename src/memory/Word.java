@@ -1,5 +1,8 @@
+package memory;
+import java.io.Serializable;
 
-public class Word {
+
+public class Word implements Serializable{
 	private boolean[] bits;
 	
 	public Word(){
