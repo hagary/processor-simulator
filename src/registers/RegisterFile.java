@@ -19,5 +19,11 @@ public class RegisterFile {
 		this.registers = registers;
 	}
 	
+	public short readReg(int regNum){
+		return registers[regNum].getData();
+	}
 	
+	public void writeReg(int regNum, short data){
+		registers[regNum].setData(data);
+	}
 }
