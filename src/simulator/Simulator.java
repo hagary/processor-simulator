@@ -1,3 +1,5 @@
+package simulator;
+
 
 import java.awt.Window.Type;
 import java.util.Scanner;
@@ -10,7 +12,7 @@ import memory.WriteMissPolicy;
 
 
 public class Simulator {
-	static MemoryHierarchy dataMem;
+	private static MemoryHierarchy dataMem;
 	static MemoryHierarchy instructionsMem;
 	public static void main (String[]args){
 		/* --------REQUIRED INPUT -----------*/
@@ -39,7 +41,7 @@ public class Simulator {
 		//MAIN MEMORY
 		MemoryHierarchy.setMainMem(new Memory(lineSize,memCycles));
 		//DATA MEMORY
-		dataMem = new MemoryHierarchy(lineSize);
+		dataMem  = new MemoryHierarchy(lineSize);
 		//INSTRUCTIONS MEMORY
 		instructionsMem = new MemoryHierarchy(lineSize);
 		
@@ -88,5 +90,8 @@ public class Simulator {
 		}
 		
 	
+	}
+	public static MemoryHierarchy getDataMem() {
+		return dataMem;
 	}
 }
