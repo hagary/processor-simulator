@@ -1,3 +1,4 @@
+package simulator;
 
 import java.awt.Window.Type;
 import java.util.Scanner;
@@ -10,8 +11,22 @@ import memory.WriteMissPolicy;
 
 
 public class Simulator {
-	static MemoryHierarchy dataMem;
-	static MemoryHierarchy instructionsMem;
+	private static MemoryHierarchy dataMem;
+	private static MemoryHierarchy instructionsMem;
+	
+	public static MemoryHierarchy getDataMem() {
+		return dataMem;
+	}
+	public static void setDataMem(MemoryHierarchy dataMem) {
+		Simulator.dataMem = dataMem;
+	}
+	public static MemoryHierarchy getInstructionsMem() {
+		return instructionsMem;
+	}
+	public static void setInstructionsMem(MemoryHierarchy instructionsMem) {
+		Simulator.instructionsMem = instructionsMem;
+	}
+	
 	public static void main (String[]args){
 		/* --------REQUIRED INPUT -----------*/
 		int memCycles; //main memory hit cycles
