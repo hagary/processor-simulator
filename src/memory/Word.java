@@ -3,18 +3,18 @@ import java.io.Serializable;
 
 
 public class Word implements Serializable{
-	private boolean[] bits;
+	private String data;
 	
-	public Word(){
-		this.bits = new boolean[16];
+	public Word(String data){
+		this.data = data;
 	}
 
-	public boolean[] getBits() {
-		return bits;
+	public String getData() {
+		return data;
 	}
 
-	public void setBits(boolean[] bits) {
-		this.bits = bits;
+	public void setData(String data) {
+		this.data = data;
 	}
 
 }

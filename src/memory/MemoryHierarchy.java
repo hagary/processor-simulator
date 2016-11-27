@@ -20,11 +20,11 @@ public class MemoryHierarchy {
 		this.lineSize = lineSize;
 	}
 
-	public Word readWord(int wordAddress){
+	public Word readWord(short wordAddress){
 		return cacheLevels.getFirst().readWord(wordAddress);
 	}
 
-	public void writeWord(int wordAddress, Word wordToWrite){
+	public void writeWord(short wordAddress, Word wordToWrite){
 		cacheLevels.getFirst().writeWord(wordAddress, wordToWrite);
 		return ;
 	}
