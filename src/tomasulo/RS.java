@@ -10,16 +10,9 @@ public class RS {
 	private int address;
 	
 	private ROBEntry dest;
-	public RS(Op op, boolean busy, int vj, int vx, ROBEntry qj, ROBEntry qk, int address, ROBEntry dest) 
+	public RS(Op op) 
 	{
 		this.op = op;
-		this.busy = busy;
-		Vj = vj;
-		Vx = vx;
-		Qj = qj;
-		Qk = qk;
-		this.address = address;
-		this.dest = dest;
 	}
 	public Op getOp() {
 		return op;
