@@ -10,9 +10,13 @@ public class Memory {
 	private int cycles;
 
 	public Memory(int l, int cycles){
-		this.s=64*1024;
+		this.s=(64*1024)/2; //number of words
 		this.l=l;
-		this.setCycles(cycles);
+		this.cycles = cycles;
+		lines = new Line[s];
+		for (int i = 0; i < lines.length; i++) {
+			lines[i] = new Line();
+		}
 	}
 	public int getS() {
 		return s;

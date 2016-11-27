@@ -7,11 +7,11 @@ import org.apache.commons.lang3.SerializationUtils;
 public class Cache{
 	private WriteHitPolicy writeHitPolicy;  //write hit policy enum
 	private WriteMissPolicy writeMissPolicy;  //write miss policy enum
-	private int s; //words
-	private int numSets;  //lines/m
-	private int l; // line size in words
-	private int lines; //#blocks = s/l number of lines
-	private int m; //associativity
+	private short s; //words
+	private short numSets;  //lines/m
+	private short l; // line size in words
+	private short lines; //#blocks = s/l number of lines
+	private short m; //associativity
 	private int hitCycles;
 	private Set[] sets; //size=sets
 	private Cache nextLevel;
@@ -25,7 +25,7 @@ public class Cache{
 		this.nextLevel = nextLevel;
 	}
 
-	public Cache(int s,int l,int m,WriteHitPolicy writeHitPolicy,WriteMissPolicy writeMissPolicy, int hitCycles){
+	public Cache(short s,short l,short m,WriteHitPolicy writeHitPolicy,WriteMissPolicy writeMissPolicy, int hitCycles){
 		this.s=s;
 		this.l=l;
 		this.m=m;
@@ -33,13 +33,13 @@ public class Cache{
 		this.writeMissPolicy=writeMissPolicy;
 		this.hitCycles = hitCycles;
 	}
-	public Word readWord(int wordAddress){
-		int lineAddress = wordAddress / l;
+	public Word readWord(short wordAddress){
+		short lineAddress = (short) (wordAddress / l);
 		Line line = readLine(lineAddress);
 		Word w = line.getWord(wordAddress);
 		return w;
 	}
-	public Line readLine(int lineAddress){
+	public Line readLine(short lineAddress){
 		CacheEntry ce = this.findInCache(lineAddress); //TODO returns hit cycles
 		if(ce == null) //miss
 		{
@@ -71,8 +71,8 @@ public class Cache{
 		}
 	}
 
-	public void writeWord(int wordAddress, Word wordToWrite){
-		int lineAddress = wordAddress/l;
+	public void writeWord(short wordAddress, Word wordToWrite){
+		short lineAddress = (short) (wordAddress/l);
 		CacheEntry cacheEntry = this.findInCache(lineAddress);
 		if( cacheEntry == null )
 			this.writeMissHandler(wordAddress, wordToWrite);
@@ -80,14 +80,14 @@ public class Cache{
 			this.writeHitHandler(wordAddress, wordToWrite,cacheEntry);
 		return ;
 	}
-	private void writeMissHandler(int wordAddress, Word wordToWrite){
+	private void writeMissHandler(short wordAddress, Word wordToWrite){
 		if(writeMissPolicy == WriteMissPolicy.WRITEAROUND){
 			this.nextLevel.writeWord(wordAddress, wordToWrite);
 			return;
 		}
 		if(writeMissPolicy == WriteMissPolicy.WRITEALLOCATE){
 			//get equivalent line address
-			int lineAddress = wordAddress / l;
+			short lineAddress = (short) (wordAddress / l);
 			//fetch it from next level
 			Line line = this.nextLevel.readLine(lineAddress);
 			//insert it in current level
@@ -96,7 +96,7 @@ public class Cache{
 			this.writeWord(wordAddress, wordToWrite);
 		}
 	}
-	private void writeHitHandler(int wordAddress, Word wordToWrite, CacheEntry targetCE){
+	private void writeHitHandler(short wordAddress, Word wordToWrite, CacheEntry targetCE){
 		// 1. modify line data in current cache level
 		targetCE.getLine().modifyLine(wordAddress, wordToWrite);
 		// 2. check write policy
@@ -112,7 +112,7 @@ public class Cache{
 
 	}
 
-	public CacheEntry findInCache(int lineAddress){
+	public CacheEntry findInCache(short lineAddress){
 
 		//divide address into tag & index dependent on m
 		int setIndex = lineAddress % numSets;
@@ -132,9 +132,9 @@ public class Cache{
 		return null; //miss
 	}
 
-	public void putInCache(int address, Line line){
-		int index = address%numSets;
-		int tag = address/numSets;
+	public void putInCache(short address, Line line){
+		short index = (short) (address%numSets);
+		short tag = (short) (address/numSets);
 		
 		// Initializing the new cache entry to be inserted
 		CacheEntry newCacheEntry = new CacheEntry(false,tag,line);
@@ -151,15 +151,15 @@ public class Cache{
 			}
 		}
 		// Replace 
-		int replacmentIndex = 0; 	
+		short replacmentIndex = 0; 	
 		CacheEntry repEntry = setEntries[replacmentIndex];
 		//Get the line address of the cache entry to be removed
-		int remAddress = repEntry.getTag()*numSets + index;
+		short remAddress = (short) (repEntry.getTag()*numSets + index);
 		removeFromCache(remAddress);
 		setEntries[replacmentIndex] = newCacheEntry;
 		return;
 	}
-	public void removeFromCache(int lineAddress){
+	public void removeFromCache(short lineAddress){
 		// Remove from upper cache levels
 		if (this.getPrevLevel()!=null)
 			this.getPrevLevel().removeFromCache(lineAddress);
@@ -188,7 +188,7 @@ public class Cache{
 			}
 		}
 	}
-	public void writeLine(int lineAddress, Line lineToWrite)
+	public void writeLine(short lineAddress, Line lineToWrite)
 	{
 		CacheEntry cacheEntry = this.findInCache(lineAddress);
 		if (cacheEntry!=null)
@@ -215,7 +215,7 @@ public class Cache{
 		return s;
 	}
 
-	public void setS(int s) {
+	public void setS(short s) {
 		this.s = s;
 	}
 
@@ -223,31 +223,31 @@ public class Cache{
 		return numSets;
 	}
 
-	public void setNumSets(int numSets) {
+	public void setNumSets(short numSets) {
 		this.numSets = numSets;
 	}
 
-	public int getL() {
+	public short getL() {
 		return l;
 	}
 
-	public void setL(int l) {
+	public void setL(short l) {
 		this.l = l;
 	}
 
-	public int getLines() {
+	public short getLines() {
 		return lines;
 	}
 
-	public void setLines(int lines) {
+	public void setLines(short lines) {
 		this.lines = lines;
 	}
 
-	public int getM() {
+	public short getM() {
 		return m;
 	}
 
-	public void setM(int m) {
+	public void setM(short m) {
 		this.m = m;
 	}
 

@@ -2,10 +2,10 @@ package memory;
 
 public class CacheEntry {
 	private boolean dirty;
-	private int tag;
+	private short tag;
 	private Line line;  //size of l
 	
-	public CacheEntry(boolean dirty,int tag,Line lineData){
+	public CacheEntry(boolean dirty,short tag,Line lineData){
 		this.dirty=dirty;
 		this.tag=tag;
 		this.line=lineData;
@@ -16,10 +16,10 @@ public class CacheEntry {
 	public void setDirty(boolean dirty) {
 		this.dirty = dirty;
 	}
-	public int getTag() {
+	public short getTag() {
 		return tag;
 	}
-	public void setTag(int tag) {
+	public void setTag(short tag) {
 		this.tag = tag;
 	}
 	public Line getLine() {
