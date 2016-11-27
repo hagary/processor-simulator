@@ -35,6 +35,10 @@ public class Memory {
 	{
 		lines[lineAddress] = line;
 	}
+	public void putInMemory(int wordAddress, Word word){
+		int lineAddress =  wordAddress / l;
+		lines[lineAddress].modifyLine(wordAddress, word);
+	}
 	public Line[] getLines() {
 		return lines;
 	}

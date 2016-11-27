@@ -13,8 +13,8 @@ public class Line implements Serializable{
 		return lineData[wordIndex];
 	}
 	
-	//TODO deep copy
 	public void modifyLine(int wordAddress, Word word){
+		//wordAdress is the ABSOLUTE address
 		int wordIndex = wordAddress % lineData.length;
 		lineData[wordIndex] = SerializationUtils.clone(word);
 	}
