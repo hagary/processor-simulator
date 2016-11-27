@@ -13,25 +13,15 @@ import memory.MemoryHierarchy;
 import memory.Word;
 import memory.WriteHitPolicy;
 import memory.WriteMissPolicy;
-
+import registers.RegisterFile;
+import tomasulo.ROB;
 
 public class Simulator {
 	private static MemoryHierarchy dataMem;
 	private static MemoryHierarchy instructionsMem;
+	private static ROB ROB;
+	private static RegisterFile registerFile;
 	private static short startAddress;
-
-	public static MemoryHierarchy getDataMem() {
-		return dataMem;
-	}
-	public static void setDataMem(MemoryHierarchy dataMem) {
-		Simulator.dataMem = dataMem;
-	}
-	public static MemoryHierarchy getInstructionsMem() {
-		return instructionsMem;
-	}
-	public static void setInstructionsMem(MemoryHierarchy instructionsMem) {
-		Simulator.instructionsMem = instructionsMem;
-	}
 
 	public static void main (String[]args){
 		Scanner sc=new Scanner(System.in);
@@ -41,6 +31,11 @@ public class Simulator {
 		tomasuloInput(sc);
 		programInput();
 		dataInput();
+	}
+	public static void run(){
+		do{
+			
+		}while(true);
 	}
 	public static void dataInput(){
 		try {
@@ -229,5 +224,17 @@ public class Simulator {
 
 		}
 
+	}
+	public static MemoryHierarchy getDataMem() {
+		return dataMem;
+	}
+	public static void setDataMem(MemoryHierarchy dataMem) {
+		Simulator.dataMem = dataMem;
+	}
+	public static MemoryHierarchy getInstructionsMem() {
+		return instructionsMem;
+	}
+	public static void setInstructionsMem(MemoryHierarchy instructionsMem) {
+		Simulator.instructionsMem = instructionsMem;
 	}
 }
