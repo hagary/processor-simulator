@@ -13,11 +13,14 @@ import memory.MemoryHierarchy;
 import memory.Word;
 import memory.WriteHitPolicy;
 import memory.WriteMissPolicy;
-
+import registers.RegisterFile;
+import tomasulo.ROB;
 
 public class Simulator {
 	private static MemoryHierarchy dataMem;
 	private static MemoryHierarchy instructionsMem;
+	private static ROB ROB;
+	private static RegisterFile registerFile;
 	private static short startAddress;
 
 	public static void main (String[]args){
@@ -28,6 +31,11 @@ public class Simulator {
 		tomasuloInput(sc);
 		programInput();
 		dataInput();
+	}
+	public static void run(){
+		do{
+			
+		}while(true);
 	}
 	public static void dataInput(){
 		try {
