@@ -1,23 +1,23 @@
 package tomasulo;
-
-
+import java.util.ArrayList;
 
 public class RSSet {
-	private RS[] RSArray;
-
-	public RSSet()
-	{
-		//TODO how are we going to declare the things
+	private ArrayList<RS> RSArray;
+	public RSSet(int s)
+{
+		RSArray = new ArrayList<RS>();
 	}
-	public RS[] getRSarray() {
+public void createRS(Op Op,int number)
+	{
+		for (int i=0;i<number;i++)
+			RSArray.add(new RS(Op));
+	}
+	public ArrayList<RS> getRSarray() {
 		return RSArray;
 	}
-
-	public void setRSarray(RS[] rSarray) {
+	
+	public void setRSarray(ArrayList<RS> rSarray) {
 		RSArray = rSarray;
 	}
-	
-	
-
 	
 }

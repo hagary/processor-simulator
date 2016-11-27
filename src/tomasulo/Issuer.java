@@ -8,11 +8,11 @@ public class Issuer {
 	public boolean canIssue(Instruction i){
 		if(i.getState()==state.FETCHED){
 		if(!(Master.getROB().isFull())){
-			for(int j=0;j<Master.getRSSet().getRSarray().length;j++){
-				if(Master.getRSSet().getRSarray()[j].getOp()==i.getOP())
-					if(!Master.getRSSet().getRSarray()[j].isBusy()){
-						i.setRS(Master.getRSSet().getRSarray()[j]);
-						Master.getRSSet().getRSarray()[j].setBusy(true);
+			for(int j=0;j<Master.getRSSet().getRSarray().size();j++){
+				if(Master.getRSSet().getRSarray().get(j).getOp()==i.getOP())
+					if(!Master.getRSSet().getRSarray().get(j).isBusy()){
+						i.setRS(Master.getRSSet().getRSarray().get(j));
+						Master.getRSSet().getRSarray().get(j).setBusy(true);
 						return true;
 					}
 						
