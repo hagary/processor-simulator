@@ -2,17 +2,13 @@ package instructions.types;
 
 import instructions.Instruction;
 import registers.RegisterFile;
+import tomasulo.InstructionParameters;
 
 public class Add extends Instruction{
 	
-	public short execute(int regB, int regC){
-		//return (short)(RegisterFile.readReg(regB) + RegisterFile.readReg(regC));	
+	public short execute(InstructionParameters params){
+		//return (short)(params.getRegB() + params.getRegC());	
 		return -1; //to be removed
-	}
-	
-	public void commit(short regData, int regA){
-		//RegisterFile.writeReg(regA, regData);
-		return;	
 	}
 	
 }
