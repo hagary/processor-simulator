@@ -31,7 +31,7 @@ public class Memory {
 		return SerializationUtils.clone(lines[lineAddress]);
 
 	}
-	public void putInMemory(int lineAddress, Line line)
+	public void writeInMemory(int lineAddress, Line line)
 	{
 		lines[lineAddress] = line;
 	}

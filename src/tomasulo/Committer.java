@@ -16,12 +16,12 @@ public class Committer {
 	public void commit(Instruction i){
 		//update the register file or the memory
 		if(i.Op == Op.STORE){
-			Simulator.getDataMem().putInMemory(ROB.getROBEntries().peek().getDestination(), ROB.getROBEntries().peek().getValue());
+			Simulator.getDataMem().writeInMemory(ROB.getROBEntries().peek().getDestination(), ROB.getROBEntries().peek().getValue());
 		}
-		//else if branch, JMP or RET update the PC
+		//else if branch JMP or RET update the PC
 		
 		else {
-			Simulator.getRegsiterFile().getRegisters() [ROB.getROBEntries().peek().getDestination()] = ROB.getROBEntries().peek().getValue();
+			Simulator.getRegsiterFile().getRegisters().writeReg(ROB.getROBEntries().peek().getDestination(), ROB.getROBEntries().peek().getValue());
 		}
 	}
 
