@@ -1,3 +1,4 @@
+package simulator;
 
 import java.awt.Window.Type;
 import java.io.BufferedReader;
@@ -15,9 +16,23 @@ import memory.WriteMissPolicy;
 
 
 public class Simulator {
-	static MemoryHierarchy dataMem;
-	static MemoryHierarchy instructionsMem;
-	static short startAddress;
+	private static MemoryHierarchy dataMem;
+	private static MemoryHierarchy instructionsMem;
+	private static short startAddress;
+
+	public static MemoryHierarchy getDataMem() {
+		return dataMem;
+	}
+	public static void setDataMem(MemoryHierarchy dataMem) {
+		Simulator.dataMem = dataMem;
+	}
+	public static MemoryHierarchy getInstructionsMem() {
+		return instructionsMem;
+	}
+	public static void setInstructionsMem(MemoryHierarchy instructionsMem) {
+		Simulator.instructionsMem = instructionsMem;
+	}
+
 	public static void main (String[]args){
 		Scanner sc=new Scanner(System.in);
 		System.out.println("-----MEMORY INPUT------");
@@ -49,21 +64,21 @@ public class Simulator {
 			BufferedReader br = new BufferedReader(new FileReader("program/assembly-code.txt"));
 			short startAddress = Short.parseShort(br.readLine());
 			Simulator.startAddress = startAddress;
-			String codeLine = ""; 
+			String codeLine = "";
 			int i = 0;
 			//Insert the program code in the main memory
 			while((codeLine = br.readLine()) != null) {
 				Word w = new Word(codeLine);
 				MemoryHierarchy.getMainMem().putInMemory(startAddress + i, w);
 			}
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 	public static void tomasuloInput(Scanner sc){
 		/* --------REQUIRED INPUT -----------*/
-		int pipelineWidth; 
+		int pipelineWidth;
 		int insQueueSize;
 		int ROBSize;
 		//Reservation Stations Counts
@@ -79,7 +94,7 @@ public class Simulator {
 		int mulCount;	int mulCycles;
 		int nandCount;	int nandCycles;
 		/*--------------END REQ INPUT ------------------*/
-		
+
 		/*----------------------SCANNER--------------------*/
 		System.out.println("Enter the pipeline width:");
 		pipelineWidth = sc.nextInt();
@@ -152,25 +167,25 @@ public class Simulator {
 		String writeMiss;
 		int hitCycles;
 		/*--------------END------------------*/
-		
+
 		System.out.println("Please enter the number of cycles needed to access the main memory");
 		memCycles=sc.nextInt();
-		
+
 		System.out.println("Please enter the number of caches you need");
 		numCaches=sc.nextInt();
-		
+
 		System.out.println("Enter the line length of the caches in words.");
 		lineSize=sc.nextShort();
 		Line.setLineSize(lineSize);
-		
+
 		//MAIN MEMORY
 		MemoryHierarchy.setMainMem(new Memory(lineSize,memCycles));
 		//DATA MEMORY
 		dataMem = new MemoryHierarchy(lineSize);
 		//INSTRUCTIONS MEMORY
 		instructionsMem = new MemoryHierarchy(lineSize);
-		
-		
+
+
 		for(int i=0;i<numCaches;i++){
 			int j=i+1;
 			/* ----------- Input : Cache Size -------------*/
@@ -181,7 +196,7 @@ public class Simulator {
 				System.out.println("Enter the size of cache again!(multiple of line size)" + j);
 				s=sc.nextShort();
 			}
-			
+
 			/* ----------- Input : Associativity -------------*/
 			System.out.println("Enter the associativity of cache " + j);
 			m=sc.nextShort();
@@ -190,7 +205,7 @@ public class Simulator {
 				System.out.println("Enter associativity of cache again! (divides cache size)" + j);
 				m=sc.nextShort();
 			}
-			
+
 			/* ----------- Input : Write Policies -------------*/
 			System.out.println("Enter the write hit policy of cache Writeback/Writethrough" + j);
 			writeHit=sc.next();
@@ -200,19 +215,19 @@ public class Simulator {
 			writeMiss=sc.next();
 			writeMiss.replaceAll("\\s+", "");
 			wM=WriteMissPolicy.valueOf(writeMiss.toUpperCase());
-			
+
 			/* ----------- Input : Hit Cycles -------------*/
 			System.out.println("Enter the number of hit cycles of cache" + j);
 			hitCycles=sc.nextInt();
-			
+
 			/* ----------- Initialize Cache Levels -------------*/
 			Cache cData = new Cache(s, lineSize, m, wH, wM, hitCycles);
 			Cache cInstructions = new Cache(s, lineSize, m, wH, wM, hitCycles);
 
 			dataMem.addCacheLevel(cData);
 			instructionsMem.addCacheLevel(cInstructions);
-			
+
 		}
-	
+
 	}
 }

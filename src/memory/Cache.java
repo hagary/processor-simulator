@@ -178,7 +178,7 @@ public class Cache{
 				if (current.isDirty() && this.getWriteHitPolicy()==WriteHitPolicy.WRITEBACK)
 				{
 					if (this.getNextLevel()==null)
-						MemoryHierarchy.getMainMem().putInMemory(lineAddress, newLine);
+						MemoryHierarchy.getMainMem().writeInMemory(lineAddress, newLine);
 					else 		
 						this.getNextLevel().writeLine(lineAddress, current.getLine());
 				}
