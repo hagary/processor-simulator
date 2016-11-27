@@ -20,19 +20,6 @@ public class Simulator {
 	private static MemoryHierarchy instructionsMem;
 	private static short startAddress;
 
-	public static MemoryHierarchy getDataMem() {
-		return dataMem;
-	}
-	public static void setDataMem(MemoryHierarchy dataMem) {
-		Simulator.dataMem = dataMem;
-	}
-	public static MemoryHierarchy getInstructionsMem() {
-		return instructionsMem;
-	}
-	public static void setInstructionsMem(MemoryHierarchy instructionsMem) {
-		Simulator.instructionsMem = instructionsMem;
-	}
-
 	public static void main (String[]args){
 		Scanner sc=new Scanner(System.in);
 		System.out.println("-----MEMORY INPUT------");
@@ -229,5 +216,17 @@ public class Simulator {
 
 		}
 
+	}
+	public static MemoryHierarchy getDataMem() {
+		return dataMem;
+	}
+	public static void setDataMem(MemoryHierarchy dataMem) {
+		Simulator.dataMem = dataMem;
+	}
+	public static MemoryHierarchy getInstructionsMem() {
+		return instructionsMem;
+	}
+	public static void setInstructionsMem(MemoryHierarchy instructionsMem) {
+		Simulator.instructionsMem = instructionsMem;
 	}
 }
