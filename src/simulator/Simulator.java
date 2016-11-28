@@ -13,7 +13,9 @@ import memory.MemoryHierarchy;
 import memory.Word;
 import memory.WriteHitPolicy;
 import memory.WriteMissPolicy;
+import registers.Register;
 import registers.RegisterFile;
+import tomasulo.InsQueue;
 import tomasulo.ROB;
 
 public class Simulator {
@@ -21,9 +23,40 @@ public class Simulator {
 	private static MemoryHierarchy instructionsMem;
 	private static ROB ROB;
 	private static RegisterFile registerFile;
-	private static short startAddress;
+	private static short startAddress; //Program start address
+	private static short endAddress;
+	private static int cyclesCount;
+	private static Register PC;
+	private static InsQueue insQueue;
 
 	public static void main (String[]args){
+		userInput();
+		preRun();
+		run();
+	}
+	public static void preRun(){
+		//TODO initialize PC with startAddress
+	}
+	public static void run(){
+		short currInsAddr = 0;
+		do
+		{
+			cyclesCount++;
+			/* TODO for loop pipeline-width times plus check there's a place 
+			 * in the InsQueue:
+			 * 1. Read address value from PC
+			 * 2. Read Instruction from instructionsMem
+			 * 3. Update PC
+			 * 4. If it's any kind of branch predict if needed and execute instantly
+			 * 5. Enqueue the instruction in the InsQueue
+			 * 6. Call Issuer to start issuing the instruction waiting at the head of the InsQueue
+				
+			*/
+			while()
+			
+		}while(! ROB.isEmpty());
+	}
+	public static void userInput(){
 		Scanner sc=new Scanner(System.in);
 		System.out.println("-----MEMORY INPUT------");
 		memInput(sc);
@@ -31,11 +64,6 @@ public class Simulator {
 		tomasuloInput(sc);
 		programInput();
 		dataInput();
-	}
-	public static void run(){
-		do{
-			
-		}while(true);
 	}
 	public static void dataInput(){
 		try {
@@ -65,7 +93,9 @@ public class Simulator {
 			while((codeLine = br.readLine()) != null) {
 				Word w = new Word(codeLine);
 				MemoryHierarchy.getMainMem().putInMemory(startAddress + i, w);
+				i++;
 			}
+			Simulator.setEndAddress((short) (startAddress + i));
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -254,5 +284,29 @@ public class Simulator {
 	}
 	public static void setStartAddress(short startAddress) {
 		Simulator.startAddress = startAddress;
+	}
+	public static short getEndAddress() {
+		return endAddress;
+	}
+	public static void setEndAddress(short endAddress) {
+		Simulator.endAddress = endAddress;
+	}
+	public static Register getPC() {
+		return PC;
+	}
+	public static void setPC(Register pC) {
+		PC = pC;
+	}
+	public static int getCyclesCount() {
+		return cyclesCount;
+	}
+	public static void setCyclesCount(int cyclesCount) {
+		Simulator.cyclesCount = cyclesCount;
+	}
+	public static InsQueue getInsQueue() {
+		return insQueue;
+	}
+	public static void setInsQueue(InsQueue insQueue) {
+		Simulator.insQueue = insQueue;
 	}
 }
