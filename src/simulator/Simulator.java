@@ -1,9 +1,13 @@
 package simulator;
 
+import instructions.Instruction;
+import instructions.state;
+
 import java.awt.Window.Type;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.Writer;
 import java.util.Scanner;
 
 import memory.Cache;
@@ -15,8 +19,12 @@ import memory.WriteHitPolicy;
 import memory.WriteMissPolicy;
 import registers.Register;
 import registers.RegisterFile;
+import tomasulo.Executer;
 import tomasulo.InsQueue;
+import tomasulo.Issuer;
+import tomasulo.Op;
 import tomasulo.ROB;
+import tomasulo.ROBEntry;
 
 public class Simulator {
 	private static MemoryHierarchy dataMem;
@@ -35,27 +43,74 @@ public class Simulator {
 		run();
 	}
 	public static void preRun(){
-		//TODO initialize PC with startAddress
+		PC.setData(startAddress);
 	}
 	public static void run(){
-		short currInsAddr = 0;
+		short currInsAddr = PC.getData();
 		do
 		{
 			cyclesCount++;
-			/* TODO for loop pipeline-width times plus check there's a place 
-			 * in the InsQueue:
-			 * 1. Read address value from PC
-			 * 2. Read Instruction from instructionsMem
-			 * 3. Update PC
-			 * 4. If it's any kind of branch predict if needed and execute instantly
-			 * 5. Enqueue the instruction in the InsQueue
-			 * 6. Call Issuer to start issuing the instruction waiting at the head of the InsQueue
-				
-			*/
-			while()
-			
-		}while(! ROB.isEmpty());
+			/* ----------- COMMIT PHASE ------------*/
+			if(!ROB.isEmpty()){
+				Instruction ins = ROB.peek().getInstruction();
+				if(ins.getState() == state.WRITTEN){
+					if(Committer.canCommit(ins)){
+						Committer.commit(ins);
+					}
+				}
+			}
+			/* ----------- WRITE PHASE ------------*/
+			for (ROBEntry r  : ROB.getROBTable()) {
+				Instruction ins = r.getInstruction();
+				if(ins.getState() == state.EXECUTED){
+					if(Writer.canWrite(ins)){
+						Writer.write(ins);
+						break; //to ensure on write only per cycle
+					}
+				}
+			}
+			/* ----------- EXECUTE PHASE ------------*/
+			for (ROBEntry r : ROB.getROBTable()) {
+				Instruction ins = r.getInstruction();
+				if(ins.getState() == state.ISSUED){
+					if(Executer.canExecute(ins)){
+						Executer.execute(ins);
+					}
+				}
+			}
+			/* ----------- ISSUE PHASE ------------*/
+			if(!insQueue.isEmpty()){
+				int p = Issuer.getPipelineWidth();
+				for (int i = 0; i < p; i++) {
+					Instruction ins = insQueue.peek();
+					if(Issuer.canIssue(ins)){
+						Issuer.issue(ins);
+						insQueue.dequeue();
+					}
+					else {
+						break; //We have to issue in order
+					}
+				}
+			}
+			/* ----------- FETCH PHASE ------------*/
+			while(!insQueue.isFull()) // TODO check PC less than end address
+			{
+				Word insWord = instructionsMem.readWord(PC.getData());
+				Instruction ins = Assembler.assemblyToInstruction(insWord.getData());
+				Op insOp = ins.getOP();
+				if( insOp == Op.JMP || insOp == Op.JALR || insOp == Op.RET){
+					short nextInstAddr = ins.execute(null);
+					PC.setData(nextInstAddr);
+				}
+				else {
+					PC.setData((short)(PC.getData() + 1));
+					insQueue.enqueue(ins);
+				}
+			}			
+
+		}while(!ROB.isEmpty());
 	}
+
 	public static void userInput(){
 		Scanner sc=new Scanner(System.in);
 		System.out.println("-----MEMORY INPUT------");
