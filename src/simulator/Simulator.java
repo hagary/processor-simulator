@@ -15,6 +15,7 @@ import memory.WriteHitPolicy;
 import memory.WriteMissPolicy;
 import registers.Register;
 import registers.RegisterFile;
+import tomasulo.InsQueue;
 import tomasulo.ROB;
 
 public class Simulator {
@@ -26,6 +27,7 @@ public class Simulator {
 	private static short endAddress;
 	private static int cyclesCount;
 	private static Register PC;
+	private static InsQueue insQueue;
 
 	public static void main (String[]args){
 		userInput();
@@ -50,7 +52,7 @@ public class Simulator {
 			 * 6. Call Issuer to start issuing the instruction waiting at the head of the InsQueue
 				
 			*/
-			
+			while()
 			
 		}while(! ROB.isEmpty());
 	}
@@ -294,5 +296,17 @@ public class Simulator {
 	}
 	public static void setPC(Register pC) {
 		PC = pC;
+	}
+	public static int getCyclesCount() {
+		return cyclesCount;
+	}
+	public static void setCyclesCount(int cyclesCount) {
+		Simulator.cyclesCount = cyclesCount;
+	}
+	public static InsQueue getInsQueue() {
+		return insQueue;
+	}
+	public static void setInsQueue(InsQueue insQueue) {
+		Simulator.insQueue = insQueue;
 	}
 }
