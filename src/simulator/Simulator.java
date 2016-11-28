@@ -1,27 +1,10 @@
 package simulator;
 
-import instructions.Instruction;
-import instructions.state;
-import instructions.types.Add;
-import instructions.types.Addi;
-import instructions.types.Beq;
-import instructions.types.Jalr;
-import instructions.types.Jmp;
-import instructions.types.Load;
-import instructions.types.Mul;
-import instructions.types.Nand;
-import instructions.types.Ret;
-import instructions.types.Store;
-import instructions.types.Sub;
-
 import java.awt.Window.Type;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.Writer;
 import java.util.Scanner;
-
-import com.sun.org.apache.bcel.internal.generic.RET;
 
 import memory.Cache;
 import memory.Line;
@@ -32,25 +15,21 @@ import memory.WriteHitPolicy;
 import memory.WriteMissPolicy;
 import registers.Register;
 import registers.RegisterFile;
-import tomasulo.Executer;
 import tomasulo.InsQueue;
-import tomasulo.Issuer;
-import tomasulo.Op;
 import tomasulo.ROB;
-import tomasulo.ROBEntry;
 import tomasulo.RSSet;
 
 public class Simulator {
 	private static MemoryHierarchy dataMem;
 	private static MemoryHierarchy instructionsMem;
 	private static ROB ROB;
+	private static RSSet RSSet;
 	private static RegisterFile registerFile;
 	private static short startAddress; //Program start address
 	private static short endAddress;
 	private static int cyclesCount;
 	private static Register PC;
 	private static InsQueue insQueue;
-	private static RSSet RSSet;
 
 	public static void main (String[]args){
 		userInput();
@@ -58,74 +37,27 @@ public class Simulator {
 		run();
 	}
 	public static void preRun(){
-		PC.setData(startAddress);
+		//TODO initialize PC with startAddress
 	}
 	public static void run(){
-		short currInsAddr = PC.getData();
+		short currInsAddr = 0;
 		do
 		{
 			cyclesCount++;
-			/* ----------- COMMIT PHASE ------------*/
-			if(!ROB.isEmpty()){
-				Instruction ins = ROB.peek().getInstruction();
-				if(ins.getState() == state.WRITTEN){
-					if(Committer.canCommit(ins)){
-						Committer.commit(ins);
-					}
-				}
-			}
-			/* ----------- WRITE PHASE ------------*/
-			for (ROBEntry r  : ROB.getROBTable()) {
-				Instruction ins = r.getInstruction();
-				if(ins.getState() == state.EXECUTED){
-					if(Writer.canWrite(ins)){
-						Writer.write(ins);
-						break; //to ensure on write only per cycle
-					}
-				}
-			}
-			/* ----------- EXECUTE PHASE ------------*/
-			for (ROBEntry r : ROB.getROBTable()) {
-				Instruction ins = r.getInstruction();
-				if(ins.getState() == state.ISSUED){
-					if(Executer.canExecute(ins)){
-						Executer.execute(ins);
-					}
-				}
-			}
-			/* ----------- ISSUE PHASE ------------*/
-			if(!insQueue.isEmpty()){
-				int p = Issuer.getPipelineWidth();
-				for (int i = 0; i < p; i++) {
-					Instruction ins = insQueue.peek();
-					if(Issuer.canIssue(ins)){
-						Issuer.issue(ins);
-						insQueue.dequeue();
-					}
-					else {
-						break; //We have to issue in order
-					}
-				}
-			}
-			/* ----------- FETCH PHASE ------------*/
-			while(!insQueue.isFull() && PC.getData()<=endAddress) // TODO check PC less than end address
-			{
-				Word insWord = instructionsMem.readWord(PC.getData());
-				Instruction ins = Assembler.assemblyToInstruction(insWord.getData());
-				Op insOp = ins.getOP();
-				if( insOp == Op.JMP || insOp == Op.JALR || insOp == Op.RET){
-					short nextInstAddr = ins.execute(null);
-					PC.setData(nextInstAddr);
-				}
-				else {
-					PC.setData((short)(PC.getData() + 1));
-					insQueue.enqueue(ins);
-				}
-			}			
-
-		}while(!ROB.isEmpty());
+			/* TODO for loop pipeline-width times plus check there's a place 
+			 * in the InsQueue:
+			 * 1. Read address value from PC
+			 * 2. Read Instruction from instructionsMem
+			 * 3. Update PC
+			 * 4. If it's any kind of branch predict if needed and execute instantly
+			 * 5. Enqueue the instruction in the InsQueue
+			 * 6. Call Issuer to start issuing the instruction waiting at the head of the InsQueue
+				
+			*/
+		//	while();
+			
+		}while(! ROB.isEmpty());
 	}
-
 	public static void userInput(){
 		Scanner sc=new Scanner(System.in);
 		System.out.println("-----MEMORY INPUT------");
@@ -195,8 +127,6 @@ public class Simulator {
 		pipelineWidth = sc.nextInt();
 		System.out.println("Enter the instruction queue size:");
 		insQueueSize = sc.nextInt();
-		System.out.println("Enter the ROB  size:");
-		ROBSize = sc.nextInt();
 		System.out.println("Enter the number of reservations stations for BEQ:");
 		beqCount = sc.nextInt();
 		System.out.println("Enter the number of cycles for beq:");
@@ -243,34 +173,12 @@ public class Simulator {
 		nandCycles = sc.nextInt();
 		/*-------------------END SCANNER-------------------*/
 		/*-------------------DO SOMETHING------------------*/
-		Issuer.setPipelineWidth(pipelineWidth);
-		insQueue = new InsQueue(insQueueSize);
-		ROB = new ROB(ROBSize);
-		RSSet =  new RSSet();
-		
-		RSSet.createRS(Op.ADDI, addiCount);
-		Addi.setReqCycles(addiCycles);
-		RSSet.createRS(Op.ADD, addCount);
-		Add.setReqCycles(addCycles);
-		RSSet.createRS(Op.BEQ, beqCount);
-		Beq.setReqCycles(beqCycles);
-		RSSet.createRS(Op.JALR, jalrCount);
-		Jalr.setReqCycles(jalrCycles);
-		RSSet.createRS(Op.JMP, jmpCount);
-		Jmp.setReqCycles(jmpCycles);
-		RSSet.createRS(Op.LOAD, loadCount);
-		Load.setReqCycles(loadCycles);
-		RSSet.createRS(Op.MUL, mulCount);
-		Mul.setReqCycles(mulCycles);
-		RSSet.createRS(Op.NAND, nandCount);
-		Nand.setReqCycles(nandCycles);
-		RSSet.createRS(Op.RET, retCount);
-		Ret.setReqCycles(retCycles);
-		RSSet.createRS(Op.STORE, storeCount);
-		Store.setReqCycles(storeCycles);
-		RSSet.createRS(Op.SUB, subCount);
-		Sub.setReqCycles(subCycles);
-		
+		//TODO configure pipeline width in Issuer
+		//TODO configure insQueueSize in InsQueue class
+		//TODO configure ROBSize in ROB
+		/*TODO for each op type do as follows
+		RSSet.createRS(Op.Add, addCount);
+		Add.setCycles(addCycles); */
 		/*-------------------END DO SOMETHING------------------*/
 	}
 	public static void memInput(Scanner sc){
@@ -403,10 +311,9 @@ public class Simulator {
 	public static void setInsQueue(InsQueue insQueue) {
 		Simulator.insQueue = insQueue;
 	}
+	
+	//TODO
 	public static RSSet getRSSet() {
 		return RSSet;
-	}
-	public static void setRSSet(RSSet rSSet) {
-		RSSet = rSSet;
 	}
 }
