@@ -77,7 +77,7 @@ public class Writer {
 
 		/* --------------MISPREDICTION CHECK-----------*/
 		if(i.getOP() == Op.BEQ){
-			boolean equal = i.getEquality();;
+			boolean equal = i.isEquality();;
 			if(i.getImm() < 0 ){ //I predicted taken
 				if(!equal) //misprediction
 				{

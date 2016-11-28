@@ -16,6 +16,7 @@ public class Instruction {
 	private RS RS;
 	private Op OP;
 	private static int reqCycles;
+	private boolean equality;
 
 	public Instruction(){
 		exCycles = reqCycles;
@@ -115,5 +116,13 @@ public class Instruction {
 	}
 	public static void setReqCycles(int reqCycles) {
 		Instruction.reqCycles = reqCycles;
+	}
+
+	public boolean isEquality() {
+		return equality;
+	}
+
+	public void setEquality(boolean equality) {
+		this.equality = equality;
 	}
 }

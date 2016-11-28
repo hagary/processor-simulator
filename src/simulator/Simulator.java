@@ -20,8 +20,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.Scanner;
 
-import com.sun.org.apache.bcel.internal.generic.RET;
-
 import memory.Cache;
 import memory.Line;
 import memory.Memory;
@@ -45,13 +43,13 @@ public class Simulator {
 	private static MemoryHierarchy dataMem;
 	private static MemoryHierarchy instructionsMem;
 	private static ROB ROB;
+	private static RSSet RSSet;
 	private static RegisterFile registerFile;
 	private static short startAddress; //Program start address
 	private static short endAddress;
 	private static int cyclesCount;
 	private static Register PC;
 	private static InsQueue insQueue;
-	private static RSSet RSSet;
 
 	public static void main (String[]args){
 		userInput();
@@ -59,10 +57,9 @@ public class Simulator {
 		run();
 	}
 	public static void preRun(){
-		PC.setData(startAddress);
+		//TODO initialize PC with startAddress
 	}
 	public static void run(){
-		short currInsAddr = PC.getData();
 		do
 		{
 			cyclesCount++;
@@ -118,8 +115,8 @@ public class Simulator {
 					short nextInstAddr = ins.execute(null);
 					PC.setData(nextInstAddr);
 				}
-				else //BEQ or others 
-				{ 
+				else //BEQ or others
+				{
 					if(insOp == Op.BEQ){
 						if(ins.getImm() < 0){
 							//offset is negative so predict taken
@@ -133,12 +130,11 @@ public class Simulator {
 						PC.setData((short)(PC.getData() + 1));
 					}
 					insQueue.enqueue(ins);
-				}			
+				}
 
 			}
 		}while(!ROB.isEmpty());
 	}
-
 	public static void userInput(){
 		Scanner sc=new Scanner(System.in);
 		System.out.println("-----MEMORY INPUT------");
@@ -160,6 +156,7 @@ public class Simulator {
 				short wordAddress = Short.parseShort(address);
 				MemoryHierarchy.getMainMem().putInMemory(wordAddress, w);
 			}
+			br.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -179,7 +176,7 @@ public class Simulator {
 				i++;
 			}
 			Simulator.setEndAddress((short) (startAddress + i));
-
+			br.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -208,7 +205,7 @@ public class Simulator {
 		pipelineWidth = sc.nextInt();
 		System.out.println("Enter the instruction queue size:");
 		insQueueSize = sc.nextInt();
-		System.out.println("Enter the ROB  size:");
+		System.out.println("Enter the ROB size:");
 		ROBSize = sc.nextInt();
 		System.out.println("Enter the number of reservations stations for BEQ:");
 		beqCount = sc.nextInt();
@@ -416,10 +413,9 @@ public class Simulator {
 	public static void setInsQueue(InsQueue insQueue) {
 		Simulator.insQueue = insQueue;
 	}
+
+	//TODO
 	public static RSSet getRSSet() {
 		return RSSet;
-	}
-	public static void setRSSet(RSSet rSSet) {
-		RSSet = rSSet;
 	}
 }
