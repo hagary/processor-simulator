@@ -14,9 +14,7 @@ import instructions.types.Ret;
 import instructions.types.Store;
 import instructions.types.Sub;
 
-import java.awt.Window.Type;
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.Scanner;
 
@@ -51,7 +49,7 @@ public class Simulator {
 	private static Register PC;
 	private static InsQueue insQueue;
 
-	public static void main (String[]args){
+	public static void main (String[]args) throws SimulatorException{
 		userInput();
 		preRun();
 		run();
@@ -59,7 +57,7 @@ public class Simulator {
 	public static void preRun(){
 		PC.setData(startAddress);
 	}
-	public static void run(){
+	public static void run() throws SimulatorException{
 		do
 		{
 			cyclesCount++;

@@ -4,6 +4,7 @@ import memory.Line;
 import memory.Word;
 import registers.Register;
 import simulator.Simulator;
+import simulator.SimulatorException;
 import instructions.Instruction;
 import instructions.state;
 import instructions.types.Beq;
@@ -22,7 +23,7 @@ public class Committer {
 			return false;
 	}
 	
-	public static void commit(Instruction i){
+	public static void commit(Instruction i) throws SimulatorException{
 		if(i instanceof Store){
 			String value = "" + Simulator.getROB().peek().getValue();
 			Simulator.getDataMem().writeWord((short)Simulator.getROB().peek().getDest(), new Word(value));

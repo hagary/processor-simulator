@@ -1,5 +1,7 @@
 package registers;
 
+import simulator.SimulatorException;
+
 public class RegisterFile {
 	private Register [] registers;
 	
@@ -23,7 +25,10 @@ public class RegisterFile {
 		return registers[regNum].getData();
 	}
 	
-	public void writeReg(int regNum, short data){
-		registers[regNum].setData(data);
+	public void writeReg(int regNum, short data) throws SimulatorException{
+		if(regNum != 0)
+			registers[regNum].setData(data);
+		else
+			throw new SimulatorException("Can't write on R0");
 	}
 }
