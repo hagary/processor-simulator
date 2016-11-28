@@ -13,6 +13,7 @@ import memory.MemoryHierarchy;
 import memory.Word;
 import memory.WriteHitPolicy;
 import memory.WriteMissPolicy;
+import registers.Register;
 import registers.RegisterFile;
 import tomasulo.ROB;
 
@@ -24,6 +25,7 @@ public class Simulator {
 	private static short startAddress; //Program start address
 	private static short endAddress;
 	private static int cyclesCount;
+	private static Register PC;
 
 	public static void main (String[]args){
 		userInput();
@@ -48,6 +50,7 @@ public class Simulator {
 			 * 6. Call Issuer to start issuing the instruction waiting at the head of the InsQueue
 				
 			*/
+			
 			
 		}while(! ROB.isEmpty());
 	}
@@ -90,7 +93,7 @@ public class Simulator {
 				MemoryHierarchy.getMainMem().putInMemory(startAddress + i, w);
 				i++;
 			}
-			Simulator.endAddress = (short) (startAddress + i);
+			Simulator.setEndAddress((short) (startAddress + i));
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -279,5 +282,17 @@ public class Simulator {
 	}
 	public static void setStartAddress(short startAddress) {
 		Simulator.startAddress = startAddress;
+	}
+	public static short getEndAddress() {
+		return endAddress;
+	}
+	public static void setEndAddress(short endAddress) {
+		Simulator.endAddress = endAddress;
+	}
+	public static Register getPC() {
+		return PC;
+	}
+	public static void setPC(Register pC) {
+		PC = pC;
 	}
 }
