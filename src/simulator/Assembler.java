@@ -11,7 +11,7 @@ public class Assembler {
 	public static Instruction assemblyToInstruction(String assemblyInstruction){
 
 		String[] insOps = assemblyInstruction.split(" ");
-		Instruction instruction = new Instruction();
+		Instruction instruction = null;
 		if(insOps[0].equals("LW")){
 			instruction = new Load();
 			instruction.setRegA(Integer.parseInt(insOps[1].substring(1)));

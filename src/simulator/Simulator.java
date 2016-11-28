@@ -53,8 +53,16 @@ public class Simulator {
 		userInput();
 		preRun();
 		run();
+		System.out.println("Reg 1: "+ registerFile.readReg(1));
+		System.out.println("Reg 2: "+ registerFile.readReg(2));
+		System.out.println("Reg 3: "+ registerFile.readReg(3));
+		System.out.println("Reg 4: "+ registerFile.readReg(4));
+		System.out.println("Reg 5: "+ registerFile.readReg(5));
+		System.out.println("Reg 6: "+ registerFile.readReg(6));
 	}
 	public static void preRun(){
+		PC = new Register();
+		registerFile = new RegisterFile();
 		PC.setData(startAddress);
 	}
 	public static void run() throws SimulatorException{
@@ -66,6 +74,7 @@ public class Simulator {
 				Instruction ins = ROB.peek().getInstruction();
 				if(ins.getState() == state.WRITTEN){
 					if(Committer.canCommit(ins)){
+						System.out.println("cycle "+ cyclesCount + " "+ "commit"+ " ins "+ ins.getID() );
 						Committer.commit(ins);
 					}
 				}
@@ -76,6 +85,7 @@ public class Simulator {
 				if(ins.getState() == state.EXECUTED){
 					if(Writer.canWrite(ins)){
 						Writer.write(ins);
+						System.out.println("cycle "+ cyclesCount + " "+ "write"+ " ins "+ ins.getID() );
 						break; //to ensure on write only per cycle
 					}
 				}
@@ -85,6 +95,7 @@ public class Simulator {
 				Instruction ins = r.getInstruction();
 				if(ins.getState() == state.ISSUED){
 					if(Executer.canExecute(ins)){
+						System.out.println("cycle "+ cyclesCount + " "+ "execute"+ " ins "+ ins.getID() );
 						Executer.execute(ins);
 					}
 				}
@@ -96,6 +107,7 @@ public class Simulator {
 					Instruction ins = insQueue.peek();
 					if(Issuer.canIssue(ins)){
 						Issuer.issue(ins);
+						System.out.println("cycle "+ cyclesCount + " "+ "issue"+ " ins "+ ins.getID() );
 						insQueue.dequeue();
 					}
 					else {
@@ -104,10 +116,12 @@ public class Simulator {
 				}
 			}
 			/* ----------- FETCH PHASE ------------*/
-			while(!insQueue.isFull() && PC.getData()<=endAddress) // TODO check PC less than end address
-			{
+			while(!insQueue.isFull() && PC.getData()<=endAddress)
+			{	
 				Word insWord = instructionsMem.readWord(PC.getData());
 				Instruction ins = Assembler.assemblyToInstruction(insWord.getData());
+				System.out.println("cycle "+ cyclesCount + " "+ "fetch" + " ins "+ ins.getID() );
+				ins.setState(state.FETCHED);
 				Op insOp = ins.getOP();
 				if( insOp == Op.JMP || insOp == Op.JALR || insOp == Op.RET){
 					short nextInstAddr = ins.execute(null);
@@ -131,7 +145,7 @@ public class Simulator {
 				}
 
 			}
-		}while(!ROB.isEmpty());
+		}while(!ROB.isEmpty() || !insQueue.isEmpty() );
 	}
 	public static void userInput(){
 		Scanner sc=new Scanner(System.in);
@@ -144,7 +158,7 @@ public class Simulator {
 	}
 	public static void dataInput(){
 		try {
-			BufferedReader br = new BufferedReader(new FileReader("program/data-input.txt"));
+			BufferedReader br = new BufferedReader(new FileReader("src/program/data-input.txt"));
 			String address = "";
 			String data = "";
 			//Insert the data in the main memory
@@ -162,7 +176,7 @@ public class Simulator {
 	}
 	public static void programInput(){
 		try {
-			BufferedReader br = new BufferedReader(new FileReader("program/assembly-code.txt"));
+			BufferedReader br = new BufferedReader(new FileReader("src/program/assembly-code.txt"));
 			short startAddress = Short.parseShort(br.readLine());
 			Simulator.startAddress = startAddress;
 			String codeLine = "";
@@ -173,7 +187,7 @@ public class Simulator {
 				MemoryHierarchy.getMainMem().putInMemory(startAddress + i, w);
 				i++;
 			}
-			Simulator.setEndAddress((short) (startAddress + i));
+			endAddress = (short) (startAddress + i -1);
 			br.close();
 		} catch (Exception e) {
 			e.printStackTrace();

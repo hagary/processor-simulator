@@ -2,10 +2,13 @@ package instructions.types;
 
 import instructions.Instruction;
 import tomasulo.InstructionParameters;
+import tomasulo.Op;
 import simulator.Simulator; 
 
 public class Jmp extends Instruction{
-	
+	public Jmp (){
+		this.setOP(Op.JMP);
+	}
 	public short execute(InstructionParameters IP){
 		if(IP == null){
 			short regA = Simulator.getRegisterFile().readReg(this.getRegA());
