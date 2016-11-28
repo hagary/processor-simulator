@@ -62,5 +62,13 @@ public class RS {
 	public void setDest(ROBEntry dest) {
 		this.dest = dest;
 	}
+	
+	public String toString(){
+		
+		return "[" + "OP: "+ this.getOp().name() + ", " + "Busy : "+this.isBusy()
+				+", Vj : " + this.getVj()+", Vx : "+ this.getVx() + 
+				", Qj : " + this.getQj().toString() + ", "  + ", Qk : " + this.getQk().toString()
+				+ ", address : " + this.getAddress() +"]";	
+	}
 
 }

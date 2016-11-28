@@ -47,4 +47,10 @@
 		this.ready = ready;
  	}
  	
+ 	public String toString(){
+ 		return "Value : " + this.getValue() + ", Destination : "+ this.getDest() +
+ 				"Ready : " + this.isReady()+" "+ 
+ 				"Instruction Address : " + this.getInstruction().toString(); 
+ 	}
+ 	
   }
