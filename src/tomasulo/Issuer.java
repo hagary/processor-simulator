@@ -3,9 +3,9 @@ package tomasulo;
 import instructions.Instruction;
 import instructions.state;
 public class Issuer {
-	private int PipelineWidth;
+	private static int pipelineWidth;
 
-	public boolean canIssue(Instruction i){
+	public static boolean canIssue(Instruction i){
 		if(i.getState()==state.FETCHED){
 			if(!(Master.getROB().isFull())){
 				for(int j=0;j<Master.getRSSet().getRSarray().size();j++){
@@ -23,18 +23,18 @@ public class Issuer {
 		return false;
 	}
 
-	public void issue(Instruction i){
+	public static void issue(Instruction i){
 
 		Master.getROB().insertROBEntery(i);
 		i.setState(state.ISSUED);
 
 	}
 
-	public int getPipelineWidth() {
-		return PipelineWidth;
+	public static int getPipelineWidth() {
+		return pipelineWidth;
 	}
 
-	public void setPipelineWidth(int pipelineWidth) {
-		PipelineWidth = pipelineWidth;
+	public static void setPipelineWidth(int p) {
+		pipelineWidth = p;
 	}
 }
