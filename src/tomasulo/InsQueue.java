@@ -12,7 +12,7 @@ public class InsQueue {
 	public InsQueue(int size){
 		this.size = size;
 	}
-	public void queue(Instruction ins){
+	public void enqueue(Instruction ins){
 		buffer.add(ins);
 	}
 	public Instruction dequeue(){
