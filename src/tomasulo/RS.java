@@ -70,5 +70,12 @@ public class RS {
 				", Qj : " + this.getQj().toString() + ", "  + ", Qk : " + this.getQk().toString()
 				+ ", address : " + this.getAddress() +"]";	
 	}
-
+	public void flush(){
+		busy = false;
+		Vj = 0;
+		Vx = 0;
+		Qj = null;
+		Qk = null;
+		address = 0;
+	}
 }

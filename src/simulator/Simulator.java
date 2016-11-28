@@ -18,7 +18,6 @@ import java.awt.Window.Type;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.Writer;
 import java.util.Scanner;
 
 import com.sun.org.apache.bcel.internal.generic.RET;
@@ -32,6 +31,7 @@ import memory.WriteHitPolicy;
 import memory.WriteMissPolicy;
 import registers.Register;
 import registers.RegisterFile;
+import tomasulo.Committer;
 import tomasulo.Executer;
 import tomasulo.InsQueue;
 import tomasulo.Issuer;
@@ -39,6 +39,7 @@ import tomasulo.Op;
 import tomasulo.ROB;
 import tomasulo.ROBEntry;
 import tomasulo.RSSet;
+import tomasulo.Writer;
 
 public class Simulator {
 	private static MemoryHierarchy dataMem;
@@ -117,12 +118,24 @@ public class Simulator {
 					short nextInstAddr = ins.execute(null);
 					PC.setData(nextInstAddr);
 				}
-				else {
-					PC.setData((short)(PC.getData() + 1));
+				else //BEQ or others 
+				{ 
+					if(insOp == Op.BEQ){
+						if(ins.getImm() < 0){
+							//offset is negative so predict taken
+							short nextInstAddr = ins.execute(null);
+							PC.setData(nextInstAddr);
+						}
+						ins.setPc(PC.getData());
+					}
+					else {
+						//increment PC
+						PC.setData((short)(PC.getData() + 1));
+					}
 					insQueue.enqueue(ins);
-				}
-			}			
+				}			
 
+			}
 		}while(!ROB.isEmpty());
 	}
 
@@ -247,7 +260,7 @@ public class Simulator {
 		insQueue = new InsQueue(insQueueSize);
 		ROB = new ROB(ROBSize);
 		RSSet =  new RSSet();
-		
+
 		RSSet.createRS(Op.ADDI, addiCount);
 		Addi.setReqCycles(addiCycles);
 		RSSet.createRS(Op.ADD, addCount);
@@ -270,7 +283,7 @@ public class Simulator {
 		Store.setReqCycles(storeCycles);
 		RSSet.createRS(Op.SUB, subCount);
 		Sub.setReqCycles(subCycles);
-		
+
 		/*-------------------END DO SOMETHING------------------*/
 	}
 	public static void memInput(Scanner sc){

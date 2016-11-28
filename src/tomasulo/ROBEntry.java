@@ -52,5 +52,12 @@
  				"Ready : " + this.isReady()+" "+ 
  				"Instruction Address : " + this.getInstruction().toString(); 
  	}
+ 	public void flush(){
+ 		op = null;
+ 		dest = 0;
+ 		instruction = null;
+ 		value = 0;
+ 		ready = false;
+ 	}
  	
   }
