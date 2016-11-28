@@ -15,8 +15,12 @@ public class Instruction {
 	private int exCycles;
 	private RS RS;
 	private Op OP;
-	
-		
+	private static int reqCycles;
+
+	public Instruction(){
+		exCycles = reqCycles;
+	}
+
 	public short execute(InstructionParameters params){
 		return 0;
 	}
@@ -96,6 +100,7 @@ public class Instruction {
 	public void setOP(Op oP) {
 		OP = oP;
 	}
+
 	
 	public String print(){
 		return "Address : " +this.toString() + "\n" +  "regA : " + this.getRegA() + "\n" + "regB : " + this.getRegB() + "\n" + 
@@ -103,6 +108,12 @@ public class Instruction {
 				+ "imm : " + this.getImm() + "\n" + "state : " + this.getState() + "\n" 
 				+ "exCycles : " + this.getExCycles() + "\n" + "RS : " + this.getRS().toString() + "\n" 
 				+"OP : "+ this.getOP().name();
-		
+	}
+
+	public static int getReqCycles() {
+		return reqCycles;
+	}
+	public static void setReqCycles(int reqCycles) {
+		Instruction.reqCycles = reqCycles;
 	}
 }

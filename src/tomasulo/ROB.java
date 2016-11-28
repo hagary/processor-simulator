@@ -2,32 +2,41 @@ package tomasulo;
 
 import instructions.Instruction;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
 
 public class ROB {
-	private Queue<ROBEntry> ROBTable;
+	private ArrayList<ROBEntry> ROBTable;
+	private int size;
 
-	public ROB()
+	public ROB(int size)
 	{
-		ROBTable = new LinkedList<ROBEntry>();
-	}
-	public Queue<ROBEntry> getROBTable() {
-		return ROBTable;
-	}
-
-	public void setROBTable(Queue<ROBEntry> rOBTable) {
-		ROBTable = rOBTable;
+		ROBTable = new ArrayList<ROBEntry>();
+		this.size = size;
 	}
 	
 	public boolean isFull(){
-		return false;
+		return ROBTable.size() == size;
 	}
-	
-	public void insertROBEntery(Instruction i){
-		ROBEntry r= new ROBEntry(i.getOP(), i.getRegA(), i, 0, false);
-	if(!this.isFull())
+	public boolean isEmpty(){
+		return ROBTable.size() == 0;
+	}
+	public void enqueue(ROBEntry r){
 		ROBTable.add(r);
+	}
+	public ROBEntry dequeue(){
+		return ROBTable.remove(0);
+	}
+	public ROBEntry peek(){
+		return ROBTable.get(0);
+	}
+	public ArrayList<ROBEntry> getROBTable() {
+		return ROBTable;
+	}
+
+	public void setROBTable(ArrayList<ROBEntry> rOBTable) {
+		ROBTable = rOBTable;
 	}
 	
 }
