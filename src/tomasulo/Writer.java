@@ -73,6 +73,11 @@ public class Writer {
 			params.setRegB(rF.readReg(i.getRegB()));
 			params.setImm((short) i.getImm());
 		}
+		else if(i instanceof Sub)
+		{
+			params.setRegB(rF.readReg(i.getRegB()));
+			params.setRegC(rF.readReg(i.getRegC()));
+		}
 		short res = i.execute(params);
 		ROB rob = Simulator.getROB();
 		ArrayList<ROBEntry> robQ = rob.getROBTable();
