@@ -55,10 +55,6 @@ public class Simulator {
 		run();
 		System.out.println("Reg 1: "+ registerFile.readReg(1));
 		System.out.println("Reg 2: "+ registerFile.readReg(2));
-		System.out.println("Reg 3: "+ registerFile.readReg(3));
-		System.out.println("Reg 4: "+ registerFile.readReg(4));
-		System.out.println("Reg 5: "+ registerFile.readReg(5));
-		System.out.println("Reg 6: "+ registerFile.readReg(6));
 	}
 	public static void preRun(){
 		PC = new Register();
@@ -125,6 +121,7 @@ public class Simulator {
 				Op insOp = ins.getOP();
 				if( insOp == Op.JMP || insOp == Op.JALR || insOp == Op.RET){
 					short nextInstAddr = ins.execute(null);
+					System.out.println("jmp address " + nextInstAddr);
 					PC.setData(nextInstAddr);
 				}
 				else //BEQ or others

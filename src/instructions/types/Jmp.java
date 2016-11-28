@@ -13,7 +13,7 @@ public class Jmp extends Instruction{
 		if(IP == null){
 			short regA = Simulator.getRegisterFile().readReg(this.getRegA());
 			short PC = Simulator.getPC().getData();
-			short imm = Simulator.getRegisterFile().readReg(this.getImm());
+			int imm = this.getImm();
 			short address  = (short)(regA + PC + imm + 1);
 			return address;	
 		}

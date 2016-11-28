@@ -1,7 +1,5 @@
 0
-ADDI r1 r0 4
+JMP r0 2
+ADD r1 r0 r0
+ADD r1 r0 r0
 ADDI r2 r0 10
-ADD r3 r2 r2
-SUB r4 r3 r2
-MUL r5 r2 r2
-NAND r6 r1 r1
