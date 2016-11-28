@@ -5,6 +5,7 @@ import memory.Word;
 import registers.Register;
 import simulator.Simulator;
 import instructions.Instruction;
+import instructions.state;
 import instructions.types.Beq;
 import instructions.types.Jalr;
 import instructions.types.Jmp;
@@ -36,7 +37,7 @@ public class Committer {
 		else {
 			Simulator.getRegisterFile().writeReg((short)Simulator.getROB().peek().getDest(), (short)Simulator.getROB().peek().getValue());
 		}
-		
+		i.setState(state.COMMITED);
 		Simulator.getROB().dequeue();
 	}
 
