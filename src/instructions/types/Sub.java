@@ -7,8 +7,7 @@ import tomasulo.InstructionParameters;
 public class Sub extends Instruction{
 		
 	public short execute(InstructionParameters params){
-		//return (short)(params.getRegB() - params.getRegC());	
-		return -1; //to be removed
+		return (short)(params.getRegB() - params.getRegC());	
 	}
 	
 }

@@ -57,7 +57,7 @@ public class Simulator {
 		run();
 	}
 	public static void preRun(){
-		//TODO initialize PC with startAddress
+		PC.setData(startAddress);
 	}
 	public static void run(){
 		do
@@ -414,7 +414,6 @@ public class Simulator {
 		Simulator.insQueue = insQueue;
 	}
 
-	//TODO
 	public static RSSet getRSSet() {
 		return RSSet;
 	}
