@@ -23,8 +23,10 @@ public class Beq extends Instruction{
 		}
 		else{
 			if(params.getRegA() == params.getRegB()){
+				params.setEquality(true);
 				return (short)(params.getPc() + 1 + params.getImm());	
 			}
+			params.setEquality(false);
 			return (short)(params.getPc() + 1);
 		}
 	}
