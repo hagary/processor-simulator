@@ -53,6 +53,11 @@ public class Simulator {
 		userInput();
 		preRun();
 		run();
+		int count = 1;
+		for (Cache c : Simulator.getDataMem().getCacheLevels()) {
+			double hitRatio = 1f*c.getHitCycles()/(c.getHits()+c.getMisses()); 
+			System.out.println("Hit Rate in cache " + (count++) + " is " + hitRatio);
+		}
 		System.out.println("Reg 1: "+ registerFile.readReg(1));
 		System.out.println("Reg 2: "+ registerFile.readReg(2));
 	}

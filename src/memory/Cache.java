@@ -16,6 +16,8 @@ public class Cache{
 	private Set[] sets; //size=sets
 	private Cache nextLevel;
 	private Cache prevLevel;
+	private int hits;
+	private int misses;
 
 	public Cache getNextLevel() {
 		return nextLevel;
@@ -37,6 +39,8 @@ public class Cache{
 		for (int i = 0; i < sets.length; i++) {
 			sets[i] = new Set(m);
 		}
+		hits = 0;
+		misses = 0;
 	}
 	public Word readWord(short wordAddress){
 		short lineAddress = (short) (wordAddress / l);
@@ -48,6 +52,8 @@ public class Cache{
 		CacheEntry ce = this.findInCache(lineAddress); //TODO returns hit cycles
 		if(ce == null) //miss
 		{
+			misses++;
+			hits--;
 			Line targetLine;
 			//Is this the last level?
 			if(this.getNextLevel() == null)
@@ -70,6 +76,7 @@ public class Cache{
 		}
 		else //hit
 		{
+			hits++;
 			//return a deep copy
 			//TODO return total cycles calculated ^^
 			return SerializationUtils.clone(ce.getLine());
@@ -86,6 +93,8 @@ public class Cache{
 		return ;
 	}
 	private void writeMissHandler(short wordAddress, Word wordToWrite){
+		misses++;
+		hits--;
 		if(writeMissPolicy == WriteMissPolicy.WRITEAROUND){
 			this.nextLevel.writeWord(wordAddress, wordToWrite);
 			return;
@@ -106,6 +115,7 @@ public class Cache{
 		}
 	}
 	private void writeHitHandler(short wordAddress, Word wordToWrite, CacheEntry targetCE){
+		hits++;
 		// 1. modify line data in current cache level
 		targetCE.getLine().modifyLine(wordAddress, wordToWrite);
 		// 2. check write policy
@@ -292,4 +302,21 @@ public class Cache{
 	public int lineAddress(int wordAddress){
 		return wordAddress/l;
 	}
+
+	public int getHits() {
+		return hits;
+	}
+
+	public void setHits(int hits) {
+		this.hits = hits;
+	}
+
+	public int getMisses() {
+		return misses;
+	}
+
+	public void setMisses(int misses) {
+		this.misses = misses;
+	}
+	
 }
