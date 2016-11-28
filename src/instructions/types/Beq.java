@@ -16,7 +16,7 @@ public class Beq extends Instruction{
 			short regB = Simulator.getRegisterFile().readReg(this.getRegB());
 			short PC = Simulator.getPC().getData();
 			if(regA == regB){
-				short imm = Simulator.getRegisterFile().readReg(this.getImm());
+				short imm = (short) this.getImm();
 				short address = (short) (PC + imm + 1);
 				return address;
 			}

@@ -41,7 +41,7 @@ public class Issuer {
 					for(ROBEntry re : Simulator.getROB().getROBTable() )
 					{
 						//checking on regB
-						if(re.getDest() == ins.getRegB()){ 
+						if(re.getInstruction() != ins && re.getDest() == ins.getRegB()){ 
 							if(!re.isReady()){
 								//regB not ready --> set Qj
 								rs.setQj(re);
@@ -54,7 +54,7 @@ public class Issuer {
 							rs.setVj(ins.getRegB());
 						}
 						//checking on regC
-						if(re.getDest() == ins.getRegC()){ //regC not ready --> set Qk
+						if(re.getInstruction() != ins && re.getDest() == ins.getRegC()){ //regC not ready --> set Qk
 							if(!re.isReady()){
 								//regB not ready --> set Qk
 								rs.setQk(re);
@@ -76,7 +76,7 @@ public class Issuer {
 					for(ROBEntry re : Simulator.getROB().getROBTable() )
 					{
 						//checking on regB
-						if(re.getDest() == ins.getRegB()){ 
+						if(re.getInstruction() != ins && re.getDest() == ins.getRegB()){ 
 							if(!re.isReady()){
 								//regB not ready --> set Qj
 								rs.setQj(re);
@@ -101,7 +101,7 @@ public class Issuer {
 					for(ROBEntry re : Simulator.getROB().getROBTable() )
 					{
 						//checking on regB
-						if(re.getDest() == ins.getRegB()){ 
+						if(	re.getInstruction() != ins && re.getDest() == ins.getRegB()){ 
 							if(!re.isReady()){
 								//regB not ready --> set Qj
 								rs.setQj(re);
@@ -115,7 +115,7 @@ public class Issuer {
 						}
 						
 						//check on regA
-						if(re.getDest() == ins.getRegA()){ 
+						if(re.getInstruction() != ins && re.getDest() == ins.getRegA()){ 
 							if(!re.isReady()){
 								rs.setQk(re);
 							}
@@ -126,6 +126,7 @@ public class Issuer {
 						else{
 							rs.setVk(ins.getRegA());
 						}
+						
 						//setting imm in address
 						rs.setAddress(ins.getImm());
 					}

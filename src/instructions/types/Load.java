@@ -16,7 +16,7 @@ public class Load extends Instruction {
 		short address = (short) (regB+ imm);	
 		String result = (Simulator.getDataMem().readWord(address)).getData(); //convert to short
 		Short s = Short.parseShort(result);
-		return 0; //result
+		return s; //result
 	}
 	
 }
