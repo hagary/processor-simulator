@@ -1,14 +1,13 @@
 package tomasulo;
-
 import java.util.ArrayList;
 
 public class RSSet {
 	private ArrayList<RS> RSArray;
 	public RSSet(int s)
-	{
+{
 		RSArray = new ArrayList<RS>();
 	}
-	public void createRS(Op Op,int number)
+public void createRS(Op Op,int number)
 	{
 		for (int i=0;i<number;i++)
 			RSArray.add(new RS(Op));

@@ -1,6 +1,8 @@
 package instructions;
 
 import tomasulo.InstructionParameters;
+import tomasulo.RS;
+import tomasulo.Op;
 
 public class Instruction {
 	
@@ -10,6 +12,9 @@ public class Instruction {
 	private int pc;
 	private int imm;
 	private state state;
+	private int exCycles;
+	private RS RS;
+	private Op OP;
 		
 	public short execute(InstructionParameters params){
 		return 0;
@@ -65,5 +70,29 @@ public class Instruction {
 
 	public void setState(state state) {
 		this.state = state;
+	}
+
+	public int getExCycles() {
+		return exCycles;
+	}
+
+	public void setExCycles(int exCycles) {
+		this.exCycles = exCycles;
+	}
+
+	public RS getRS() {
+		return RS;
+	}
+
+	public void setRS(RS rS) {
+		RS = rS;
+	}
+
+	public Op getOP() {
+		return OP;
+	}
+
+	public void setOP(Op oP) {
+		OP = oP;
 	}
 }

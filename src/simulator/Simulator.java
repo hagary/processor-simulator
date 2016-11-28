@@ -262,4 +262,22 @@ public class Simulator {
 	public static void setInstructionsMem(MemoryHierarchy instructionsMem) {
 		Simulator.instructionsMem = instructionsMem;
 	}
+	public static ROB getROB() {
+		return ROB;
+	}
+	public static void setROB(ROB rOB) {
+		ROB = rOB;
+	}
+	public static RegisterFile getRegisterFile() {
+		return registerFile;
+	}
+	public static void setRegisterFile(RegisterFile registerFile) {
+		Simulator.registerFile = registerFile;
+	}
+	public static short getStartAddress() {
+		return startAddress;
+	}
+	public static void setStartAddress(short startAddress) {
+		Simulator.startAddress = startAddress;
+	}
 }
