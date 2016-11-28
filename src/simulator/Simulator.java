@@ -2,6 +2,17 @@ package simulator;
 
 import instructions.Instruction;
 import instructions.state;
+import instructions.types.Add;
+import instructions.types.Addi;
+import instructions.types.Beq;
+import instructions.types.Jalr;
+import instructions.types.Jmp;
+import instructions.types.Load;
+import instructions.types.Mul;
+import instructions.types.Nand;
+import instructions.types.Ret;
+import instructions.types.Store;
+import instructions.types.Sub;
 
 import java.awt.Window.Type;
 import java.io.BufferedReader;
@@ -9,6 +20,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.Writer;
 import java.util.Scanner;
+
+import com.sun.org.apache.bcel.internal.generic.RET;
 
 import memory.Cache;
 import memory.Line;
@@ -25,6 +38,7 @@ import tomasulo.Issuer;
 import tomasulo.Op;
 import tomasulo.ROB;
 import tomasulo.ROBEntry;
+import tomasulo.RSSet;
 
 public class Simulator {
 	private static MemoryHierarchy dataMem;
@@ -36,6 +50,7 @@ public class Simulator {
 	private static int cyclesCount;
 	private static Register PC;
 	private static InsQueue insQueue;
+	private static RSSet RSSet;
 
 	public static void main (String[]args){
 		userInput();
@@ -93,7 +108,7 @@ public class Simulator {
 				}
 			}
 			/* ----------- FETCH PHASE ------------*/
-			while(!insQueue.isFull()) // TODO check PC less than end address
+			while(!insQueue.isFull() && PC.getData()<=endAddress) // TODO check PC less than end address
 			{
 				Word insWord = instructionsMem.readWord(PC.getData());
 				Instruction ins = Assembler.assemblyToInstruction(insWord.getData());
@@ -180,6 +195,8 @@ public class Simulator {
 		pipelineWidth = sc.nextInt();
 		System.out.println("Enter the instruction queue size:");
 		insQueueSize = sc.nextInt();
+		System.out.println("Enter the ROB  size:");
+		ROBSize = sc.nextInt();
 		System.out.println("Enter the number of reservations stations for BEQ:");
 		beqCount = sc.nextInt();
 		System.out.println("Enter the number of cycles for beq:");
@@ -226,12 +243,34 @@ public class Simulator {
 		nandCycles = sc.nextInt();
 		/*-------------------END SCANNER-------------------*/
 		/*-------------------DO SOMETHING------------------*/
-		//TODO configure pipeline width in Issuer
-		//TODO configure insQueueSize in InsQueue class
-		//TODO configure ROBSize in ROB
-		/*TODO for each op type do as follows
-		RSSet.createRS(Op.Add, addCount);
-		Add.setCycles(addCycles); */
+		Issuer.setPipelineWidth(pipelineWidth);
+		insQueue = new InsQueue(insQueueSize);
+		ROB = new ROB(ROBSize);
+		RSSet =  new RSSet();
+		
+		RSSet.createRS(Op.ADDI, addiCount);
+		Addi.setReqCycles(addiCycles);
+		RSSet.createRS(Op.ADD, addCount);
+		Add.setReqCycles(addCycles);
+		RSSet.createRS(Op.BEQ, beqCount);
+		Beq.setReqCycles(beqCycles);
+		RSSet.createRS(Op.JALR, jalrCount);
+		Jalr.setReqCycles(jalrCycles);
+		RSSet.createRS(Op.JMP, jmpCount);
+		Jmp.setReqCycles(jmpCycles);
+		RSSet.createRS(Op.LOAD, loadCount);
+		Load.setReqCycles(loadCycles);
+		RSSet.createRS(Op.MUL, mulCount);
+		Mul.setReqCycles(mulCycles);
+		RSSet.createRS(Op.NAND, nandCount);
+		Nand.setReqCycles(nandCycles);
+		RSSet.createRS(Op.RET, retCount);
+		Ret.setReqCycles(retCycles);
+		RSSet.createRS(Op.STORE, storeCount);
+		Store.setReqCycles(storeCycles);
+		RSSet.createRS(Op.SUB, subCount);
+		Sub.setReqCycles(subCycles);
+		
 		/*-------------------END DO SOMETHING------------------*/
 	}
 	public static void memInput(Scanner sc){
@@ -363,5 +402,11 @@ public class Simulator {
 	}
 	public static void setInsQueue(InsQueue insQueue) {
 		Simulator.insQueue = insQueue;
+	}
+	public static RSSet getRSSet() {
+		return RSSet;
+	}
+	public static void setRSSet(RSSet rSSet) {
+		RSSet = rSSet;
 	}
 }
