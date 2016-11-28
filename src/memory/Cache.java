@@ -94,7 +94,11 @@ public class Cache{
 			//get equivalent line address
 			short lineAddress = (short) (wordAddress / l);
 			//fetch it from next level
-			Line line = this.nextLevel.readLine(lineAddress);
+			Line line = null;
+			if(this.nextLevel != null)
+				line = this.nextLevel.readLine(lineAddress);
+			else //fetch from memory
+				line = MemoryHierarchy.getMainMem().readInMemory(lineAddress);
 			//insert it in current level
 			this.putInCache(lineAddress, line);
 			//treat it as write hit
@@ -111,7 +115,10 @@ public class Cache{
 			return;
 		}
 		if(writeHitPolicy == WriteHitPolicy.WRITETHROUGH){
-			this.nextLevel.writeWord(wordAddress, wordToWrite);
+			if(this.nextLevel != null)
+				this.nextLevel.writeWord(wordAddress, wordToWrite);
+			else //write in memory
+				MemoryHierarchy.getMainMem().writeWordInMemory(wordAddress, wordToWrite);
 			return;
 		}
 

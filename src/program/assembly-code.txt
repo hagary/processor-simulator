@@ -1,5 +1,2 @@
 0
-JMP r0 2
-ADD r1 r0 r0
-ADD r1 r0 r0
-ADDI r2 r0 10
+SW r1 r0 20

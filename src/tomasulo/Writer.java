@@ -78,10 +78,14 @@ public class Writer {
 			params.setRegB(rF.readReg(i.getRegB()));
 			params.setRegC(rF.readReg(i.getRegC()));
 		}
-		short res = i.execute(params);
-		ROB rob = Simulator.getROB();
-		ArrayList<ROBEntry> robQ = rob.getROBTable();
-		/* --------------MISPREDICTION CHECK-----------*/
+		short res = 0;
+		if(!(i instanceof Store))
+			 res= i.execute(params);
+		else {
+			res = rF.readReg(i.getRegA());
+			findROBEntry(i).setDest(i.execute(params));;
+		}
+				/* --------------MISPREDICTION CHECK-----------*/
 		if(i.getOP() == Op.BEQ){
 			boolean equal = i.isEquality();
 			ROBEntry branchEntry = findROBEntry(i);
@@ -136,6 +140,7 @@ public class Writer {
 				rs.setVk(res);
 			}
 		}
+		i.getRS().flush();
 	}
 	public static ROBEntry findROBEntry(Instruction ins){
 		ROBEntry res = null;
