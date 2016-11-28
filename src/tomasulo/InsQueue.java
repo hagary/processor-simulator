@@ -1,26 +1,30 @@
 package tomasulo;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
 import instructions.Instruction;
 
 public class InsQueue {
-	private Instruction [] instructionBuffer;
+	private Queue<Instruction> buffer;
+	private int size; 
 	
 	public InsQueue(int size){
-		this.setInstructionBuffer(new  Instruction [size]);
+		this.size = size;
 	}
-
-	public Instruction [] getInstructionBuffer() {
-		return instructionBuffer;
+	public void queue(Instruction ins){
+		buffer.add(ins);
 	}
-
-	public void setInstructionBuffer(Instruction [] instructionBuffer) {
-		this.instructionBuffer = instructionBuffer;
+	public Instruction dequeue(){
+		return buffer.remove();
 	}
-	
-	public void insert(Instruction i){
-		for(int j=0;j<this.getInstructionBuffer().length;j++){
-			if(this.getInstructionBuffer()[j]==null)
-				this.getInstructionBuffer()[j]=i;
-		}
+	public Instruction peek(){
+		return buffer.peek();
+	}
+	public boolean isEmpty(){
+		return buffer.size() == 0;
+	}
+	public boolean isFull(){
+		return buffer.size() == size;
 	}
 }
