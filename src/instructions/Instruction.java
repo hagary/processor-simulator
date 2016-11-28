@@ -17,9 +17,13 @@ public class Instruction {
 	private Op OP;
 	private static int reqCycles;
 	private boolean equality;
+	private int ID;
+	static int count = 1;
 
 	public Instruction(){
 		exCycles = reqCycles;
+		this.setID(count);
+		count++;
 	}
 
 	public short execute(InstructionParameters params){
@@ -107,7 +111,8 @@ public class Instruction {
 		return "Address : " +this.toString() + "\n" +  "regA : " + this.getRegA() + "\n" + "regB : " + this.getRegB() + "\n" + 
 				"regC : " + this.getRegC() + "\n" 
 				+ "imm : " + this.getImm() + "\n" + "state : " + this.getState() + "\n" 
-				+ "exCycles : " + this.getExCycles() + "\n" + "RS : " + this.getRS().toString() + "\n" 
+				+ "exCycles : " + this.getExCycles() + "\n" 
+				//+ "RS : " + this.getRS().toString() + "\n" 
 				+"OP : "+ this.getOP().name();
 	}
 
@@ -124,5 +129,13 @@ public class Instruction {
 
 	public void setEquality(boolean equality) {
 		this.equality = equality;
+	}
+
+	public int getID() {
+		return ID;
+	}
+
+	public void setID(int iD) {
+		ID = iD;
 	}
 }

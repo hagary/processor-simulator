@@ -74,16 +74,24 @@ public class Writer {
 			params.setImm((short) i.getImm());
 		}
 		short res = i.execute(params);
-
+		ROB rob = Simulator.getROB();
+		ArrayList<ROBEntry> robQ = rob.getROBTable();
 		/* --------------MISPREDICTION CHECK-----------*/
 		if(i.getOP() == Op.BEQ){
-			boolean equal = i.isEquality();;
+			boolean equal = i.isEquality();
+			ROBEntry branchEntry = findROBEntry(i);
 			if(i.getImm() < 0 ){ //I predicted taken
 				if(!equal) //misprediction
 				{
 					flush(i);
 					Simulator.getPC().setData((short)(i.getPc()+1));
 					return;
+				}
+				else { 
+					//correct prediction
+					//remove branch
+					branchEntry.flush();
+					i.getRS().flush();
 				}
 			}
 			else {
@@ -93,32 +101,50 @@ public class Writer {
 					Simulator.getPC().setData((short)(res));
 					return;
 				}
+				else{
+					//correct prediction
+					//remove branch
+					branchEntry.flush();
+					i.getRS().flush();
+				}
 			}		
 		}
 		/*-------------END--------------*/
-		ROB rob = Simulator.getROB();
-		ArrayList<ROBEntry> robQ = rob.getROBTable();
-		ROBEntry myEntry = null;
-		for (int j=0;j<robQ.size();j++)
-		{
-			if (robQ.get(j).getInstruction()==i)
-				myEntry = robQ.get(j);
 
-		}
+		ROBEntry myEntry = findROBEntry(i);
 		myEntry.setReady(true);
 		myEntry.setValue(res);
+		i.setState(state.WRITTEN);
+		ArrayList<RS> rsTable = Simulator.getRSSet().getRSarray();
+		//broadcast my value to others in need
+		for (RS rs : rsTable) {
+			if(rs.getQj() == myEntry)
+			{
+				rs.setQj(null);
+				rs.setVj(res);
+			}
+			if(rs.getQk() == myEntry)
+			{
+				if(i.getID() == 3)
+					System.out.println("say hello");
+				rs.setQk(null);
+				rs.setVk(res);
+			}
+		}
 	}
-
+	public static ROBEntry findROBEntry(Instruction ins){
+		ROBEntry res = null;
+		ArrayList<ROBEntry> rob = Simulator.getROB().getROBTable();
+		for (ROBEntry robEntry : rob) {
+			if(robEntry.getInstruction() == ins)
+				res = robEntry;
+		}
+		return res;
+	}
 	public static void flush(Instruction ins){ //flush anything after i
 		//flush any newer instructions in ROB
 		ArrayList<ROBEntry> rob = Simulator.getROB().getROBTable();
-		int branchIndex = -1;
-		for (int j = 0; j < rob.size(); j++) {
-			if(rob.get(j).getInstruction() == ins){
-				branchIndex = j;
-				break;
-			}
-		}
+		int branchIndex = rob.indexOf(findROBEntry(ins));
 		for (int i = branchIndex; i < rob.size(); i++) {
 			rob.get(i).flush();
 			rob.get(i).getInstruction().getRS().flush();

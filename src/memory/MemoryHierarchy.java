@@ -37,7 +37,7 @@ public class MemoryHierarchy {
 		this.cacheLevels = cacheLevels;
 	}
 	public void addCacheLevel(Cache c){
-		Cache lastAdded = cacheLevels.getLast();
+		Cache lastAdded = cacheLevels.pollLast();
 		if(lastAdded!=null){
 			lastAdded.setNextLevel(c);
 			c.setPrevLevel(lastAdded);

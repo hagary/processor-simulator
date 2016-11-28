@@ -32,6 +32,11 @@ public class Cache{
 		this.writeHitPolicy=writeHitPolicy;
 		this.writeMissPolicy=writeMissPolicy;
 		this.hitCycles = hitCycles;
+		this.numSets = (short) (s/m);
+		this.sets = new Set[numSets];
+		for (int i = 0; i < sets.length; i++) {
+			sets[i] = new Set(m);
+		}
 	}
 	public Word readWord(short wordAddress){
 		short lineAddress = (short) (wordAddress / l);
@@ -124,9 +129,11 @@ public class Cache{
 		for( int i = 0; i < setEntries.length; i++)
 		{
 			CacheEntry c = setEntries[i];
-			int cacheTag = c.getTag();
-			if(cacheTag == tag){ //hit
-				return c;
+			if(c!=null){
+				int cacheTag = c.getTag();
+				if(cacheTag == tag){ //hit
+					return c;
+				}
 			}
 		}
 		return null; //miss
@@ -135,13 +142,13 @@ public class Cache{
 	public void putInCache(short address, Line line){
 		short index = (short) (address%numSets);
 		short tag = (short) (address/numSets);
-		
+
 		// Initializing the new cache entry to be inserted
 		CacheEntry newCacheEntry = new CacheEntry(false,tag,line);
-		
+
 		Set targetSet = sets[index];
 		CacheEntry[] setEntries = targetSet.getEntries();
-		
+
 		for (int i=0;i<targetSet.getM();i++)
 		{
 			if (setEntries[i]==null) // Found Empty slot, No Replacement needed
@@ -163,7 +170,7 @@ public class Cache{
 		// Remove from upper cache levels
 		if (this.getPrevLevel()!=null)
 			this.getPrevLevel().removeFromCache(lineAddress);
-		
+
 		int index = lineAddress%numSets;
 		int tag = lineAddress/numSets;
 		Set targetSet = sets[index];

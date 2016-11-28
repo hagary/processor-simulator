@@ -10,6 +10,7 @@ public class InsQueue {
 	private int size; 
 	
 	public InsQueue(int size){
+		buffer = new LinkedList<Instruction>();
 		this.size = size;
 	}
 	public void enqueue(Instruction ins){
