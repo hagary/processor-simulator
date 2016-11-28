@@ -6,6 +6,7 @@ public class InstructionParameters {
 	private short regC;
 	private short imm;
 	private short pc;
+	private boolean equality;
 	
 	public short getRegA() {
 		return regA;
@@ -36,6 +37,12 @@ public class InstructionParameters {
 	}
 	public void setPc(short pc) {
 		this.pc = pc;
+	}
+	public boolean isEquality() {
+		return equality;
+	}
+	public void setEquality(boolean equality) {
+		this.equality = equality;
 	}
 	
 

@@ -1,15 +1,34 @@
 package instructions.types;
 
 import instructions.Instruction;
+import simulator.Simulator;
 import tomasulo.InstructionParameters;
 
 public class Beq extends Instruction{
-
+	
+	
 	public short execute(InstructionParameters params){
-		if(params.getRegA() == params.getRegB()){
-			return (short)(params.getPc() + 1 + params.getImm());	
+		if(params == null){
+			short regA = Simulator.getRegisterFile().readReg(this.getRegA());
+			short regB = Simulator.getRegisterFile().readReg(this.getRegB());
+			short PC = Simulator.getPC().getData();
+			if(regA == regB){
+				short imm = Simulator.getRegisterFile().readReg(this.getImm());
+				short address = (short) (PC + imm + 1);
+				return address;
+			}
+			else{
+				return (short) (PC + 1);
+			}
 		}
-		return (short)(params.getPc() + 1); //to be removed
+		else{
+			if(params.getRegA() == params.getRegB()){
+				this.setEquality(true);
+				return (short)(params.getPc() + 1 + params.getImm());	
+			}
+			params.setEquality(false);
+			return (short)(params.getPc() + 1);
+		}
 	}
 		
 }

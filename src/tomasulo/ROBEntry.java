@@ -1,7 +1,7 @@
  package tomasulo;
-  
+
  import instructions.Instruction;
-  
+
  public class ROBEntry {
  	private Op op;
  	private int dest;
@@ -46,11 +46,18 @@
  	public void setReady(boolean ready) {
 		this.ready = ready;
  	}
- 	
+
  	public String toString(){
  		return "Value : " + this.getValue() + ", Destination : "+ this.getDest() +
- 				"Ready : " + this.isReady()+" "+ 
- 				"Instruction Address : " + this.getInstruction().toString(); 
+ 				"Ready : " + this.isReady()+" "+
+ 				"Instruction Address : " + this.getInstruction().toString();
  	}
- 	
+ 	public void flush(){
+ 		op = null;
+ 		dest = 0;
+ 		instruction = null;
+ 		value = 0;
+ 		ready = false;
+ 	}
+
   }

@@ -10,7 +10,7 @@ public class RSSet {
 	public void createRS(Op Op,int number)
 	{
 		for (int i=0;i<number;i++)
-			RSArray.add(new RS(Op));
+		RSArray.add(new RS(Op));
 	}
 	public ArrayList<RS> getRSarray() {
 		return RSArray;
