@@ -2,14 +2,18 @@ package instructions.types;
 
 import instructions.Instruction;
 import tomasulo.InstructionParameters;
+import simulator.Simulator; 
 
 public class Jmp extends Instruction{
 	
 	public short execute(InstructionParameters IP){
-		short regA = IP.getRegA();
-		short PC = IP.getPc();
-		short imm = IP.getImm();
-		short address  = (short)(regA + PC + imm + 1);
-		return address;
+		if(IP == null){
+			short regA = Simulator.getRegisterFile().readReg(this.getRegA());
+			short PC = Simulator.getPC().getData();
+			short imm = Simulator.getRegisterFile().readReg(this.getImm());
+			short address  = (short)(regA + PC + imm + 1);
+			return address;	
+		}
+		return -1;
 	}	
 }

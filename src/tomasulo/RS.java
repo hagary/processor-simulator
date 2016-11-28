@@ -4,7 +4,7 @@ public class RS {
 	private Op op;
 	private boolean busy;
 	private int Vj;
-	private int Vx;
+	private int Vk;
 	private ROBEntry Qj;
 	private ROBEntry Qk;
 	private int address;
@@ -32,11 +32,11 @@ public class RS {
 	public void setVj(int vj) {
 		Vj = vj;
 	}
-	public int getVx() {
-		return Vx;
+	public int getVk() {
+		return Vk;
 	}
-	public void setVx(int vx) {
-		Vx = vx;
+	public void setVk(int vk) {
+		Vk = vk;
 	}
 	public ROBEntry getQj() {
 		return Qj;
@@ -61,14 +61,6 @@ public class RS {
 	}
 	public void setDest(ROBEntry dest) {
 		this.dest = dest;
-	}
-	
-	public String toString(){
-		
-		return "[" + "OP: "+ this.getOp().name() + ", " + "Busy : "+this.isBusy()
-				+", Vj : " + this.getVj()+", Vx : "+ this.getVx() + 
-				", Qj : " + this.getQj().toString() + ", "  + ", Qk : " + this.getQk().toString()
-				+ ", address : " + this.getAddress() +"]";	
 	}
 
 }

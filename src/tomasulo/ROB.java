@@ -3,8 +3,6 @@ package tomasulo;
 import instructions.Instruction;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Queue;
 
 public class ROB {
 	private ArrayList<ROBEntry> ROBTable;
@@ -22,8 +20,10 @@ public class ROB {
 	public boolean isEmpty(){
 		return ROBTable.size() == 0;
 	}
-	public void enqueue(ROBEntry r){
-		ROBTable.add(r);
+	public void enqueue(Instruction i){
+		ROBEntry r = new ROBEntry(i.getOP(), i.getRegA(), i, 0, false);
+		if(!this.isFull())
+			ROBTable.add(r);
 	}
 	public ROBEntry dequeue(){
 		return ROBTable.remove(0);
@@ -38,5 +38,5 @@ public class ROB {
 	public void setROBTable(ArrayList<ROBEntry> rOBTable) {
 		ROBTable = rOBTable;
 	}
-	
+
 }
