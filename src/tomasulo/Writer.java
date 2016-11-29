@@ -80,21 +80,23 @@ public class Writer {
 		}
 		short res = 0;
 		if(!(i instanceof Store))
-			 res= i.execute(params);
+			res= i.execute(params);
 		else {
 			res = rF.readReg(i.getRegA());
 			findROBEntry(i).setDest(i.execute(params));;
 		}
-				/* --------------MISPREDICTION CHECK-----------*/
+		/* --------------MISPREDICTION CHECK-----------*/
 		if(i.getOP() == Op.BEQ){
 			boolean equal = i.isEquality();
 			ROBEntry branchEntry = findROBEntry(i);
 			if(i.getImm() < 0 ){ //I predicted taken
 				if(!equal) //misprediction
-				{
+				{	
+					Simulator.incBranchMisCount();
 					flush(i);
-					Simulator.getPC().setData((short)(i.getPc()+1));
-					return;
+					branchEntry.flush();
+					i.getRS().flush();
+					Simulator.getPC().setData(res);
 				}
 				else { 
 					//correct prediction
@@ -105,10 +107,13 @@ public class Writer {
 			}
 			else {
 				//I predicted not taken
-				if(equal) {
+				if(equal) { 
+					//misprediction
+					Simulator.incBranchMisCount();
 					flush(i);
-					Simulator.getPC().setData((short)(res));
-					return;
+					branchEntry.flush();
+					i.getRS().flush();
+					Simulator.getPC().setData(res);
 				}
 				else{
 					//correct prediction
@@ -116,7 +121,8 @@ public class Writer {
 					branchEntry.flush();
 					i.getRS().flush();
 				}
-			}		
+			}	
+			return;
 		}
 		/*-------------END--------------*/
 
@@ -155,9 +161,9 @@ public class Writer {
 		//flush any newer instructions in ROB
 		ArrayList<ROBEntry> rob = Simulator.getROB().getROBTable();
 		int branchIndex = rob.indexOf(findROBEntry(ins));
-		for (int i = branchIndex; i < rob.size(); i++) {
-			rob.get(i).flush();
-			rob.get(i).getInstruction().getRS().flush();
+		while (rob.size()>branchIndex+1) {
+			rob.get(branchIndex+1).getInstruction().getRS().flush();
+			rob.get(branchIndex+1).flush();
 		}
 	}
 }
