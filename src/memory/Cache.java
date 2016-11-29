@@ -16,8 +16,8 @@ public class Cache{
 	private Set[] sets; //size=sets
 	private Cache nextLevel;
 	private Cache prevLevel;
-	private int hits;
-	private int misses;
+	private double hits;
+	private double misses;
 
 	public Cache getNextLevel() {
 		return nextLevel;
@@ -303,7 +303,7 @@ public class Cache{
 		return wordAddress/l;
 	}
 
-	public int getHits() {
+	public double getHits() {
 		return hits;
 	}
 
@@ -311,7 +311,7 @@ public class Cache{
 		this.hits = hits;
 	}
 
-	public int getMisses() {
+	public double getMisses() {
 		return misses;
 	}
 
@@ -319,4 +319,9 @@ public class Cache{
 		this.misses = misses;
 	}
 	
+	public double getAMAT(){
+		double missRatio = misses/(hits+misses);
+		double lowerLevelsAMAT = this.nextLevel == null ? MemoryHierarchy.getMainMem().getCycles():this.nextLevel.getAMAT();
+		return  hitCycles + missRatio * lowerLevelsAMAT ;
+	}
 }

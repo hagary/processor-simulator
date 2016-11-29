@@ -27,10 +27,10 @@ public class Beq extends Instruction{
 		else{
 			if(params.getRegA() == params.getRegB()){
 				this.setEquality(true);
-				return (short)(params.getPc() + 1 + params.getImm());	
+				return (short)(this.getPc() + 1 + this.getImm());	
 			}
-			params.setEquality(false);
-			return (short)(params.getPc() + 1);
+			this.setEquality(false);
+			return (short)(this.getPc() + 1);
 		}
 	}
 		

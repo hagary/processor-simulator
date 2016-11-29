@@ -1,6 +1,8 @@
 package memory;
 import java.awt.Window.Type;
 import java.util.*;
+
+import simulator.Simulator;
 public class MemoryHierarchy {
 	private LinkedList<Cache> cacheLevels ;
 	private int lineSize;
@@ -57,5 +59,12 @@ public class MemoryHierarchy {
 	public static void setMainMem(Memory mainMem) {
 		MemoryHierarchy.mainMem = mainMem;
 	}
-
+	public void printStats(){
+		int count = 1;
+		for (Cache c : this.getCacheLevels()) {
+			double hitRatio = (1.0*c.getHits())/(c.getHits()+c.getMisses()); 
+			System.out.println("Hit rate in cache " + (count++) + " is " + hitRatio);
+		}
+		System.out.println("AMAT : " + this.cacheLevels.getFirst().getAMAT());
+	}
 }

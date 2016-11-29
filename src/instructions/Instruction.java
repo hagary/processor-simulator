@@ -19,6 +19,7 @@ public class Instruction {
 	private boolean equality;
 	private int ID;
 	static int count = 1;
+	private int spannedCycles;
 
 	public Instruction(){
 		exCycles = reqCycles;

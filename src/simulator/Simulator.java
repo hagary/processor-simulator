@@ -46,20 +46,35 @@ public class Simulator {
 	private static short startAddress; //Program start address
 	private static short endAddress;
 	private static int cyclesCount;
+	private static int insCount;
 	private static Register PC;
 	private static InsQueue insQueue;
+	private static double branchCount;
+	private static double branchMisCount;
 
 	public static void main (String[]args) throws SimulatorException{
 		userInput();
 		preRun();
 		run();
-		int count = 1;
-		for (Cache c : Simulator.getDataMem().getCacheLevels()) {
-			double hitRatio = 1f*c.getHitCycles()/(c.getHits()+c.getMisses()); 
-			System.out.println("Hit Rate in cache " + (count++) + " is " + hitRatio);
+		postRun();
+
+	}
+	public static void postRun(){
+		System.out.println("Cycles spanned: " + cyclesCount);
+		System.out.println("IPC: " + (insCount*1.0)/cyclesCount);
+		System.out.println("Data Cache statistics:");
+		dataMem.printStats();
+		System.out.println("Instructions Cache statistics:");
+		instructionsMem.printStats();
+		System.out.print("Branch misprediction: ");
+		if(branchCount == 0)
+			System.out.println("0%");
+		else
+			System.out.println(branchMisCount/branchCount * 100 +"%");
+		System.out.println("Registers:");
+		for (int i = 0; i < 8; i++) {
+			System.out.println("Reg " + i + " : " + registerFile.readReg(i));
 		}
-		System.out.println("Reg 1: "+ registerFile.readReg(1));
-		System.out.println("Reg 2: "+ registerFile.readReg(2));
 	}
 	public static void preRun(){
 		PC = new Register();
@@ -120,6 +135,7 @@ public class Simulator {
 			while(!insQueue.isFull() && PC.getData()<=endAddress)
 			{	
 				Word insWord = instructionsMem.readWord(PC.getData());
+				insCount ++;
 				Instruction ins = Assembler.assemblyToInstruction(insWord.getData());
 				System.out.println("cycle "+ cyclesCount + " "+ "fetch" + " ins "+ ins.getID() );
 				ins.setState(state.FETCHED);
@@ -132,12 +148,18 @@ public class Simulator {
 				else //BEQ or others
 				{
 					if(insOp == Op.BEQ){
+						branchCount++;
+						ins.setPc(PC.getData());
 						if(ins.getImm() < 0){
-							//offset is negative so predict taken
+							//predict taken
 							short nextInstAddr = ins.execute(null);
 							PC.setData(nextInstAddr);
 						}
-						ins.setPc(PC.getData());
+						else
+						{ 
+							//predict not taken
+							PC.setData((short)(PC.getData() + 1));
+						}
 					}
 					else {
 						//increment PC
@@ -430,5 +452,17 @@ public class Simulator {
 
 	public static RSSet getRSSet() {
 		return RSSet;
+	}
+	public static double getBranchCount() {
+		return branchCount;
+	}
+	public static void setBranchCount(int branchCount) {
+		Simulator.branchCount = branchCount;
+	}
+	public static double getBranchMisCount() {
+		return branchMisCount;
+	}
+	public static void incBranchMisCount() {
+		Simulator.branchMisCount++;
 	}
 }
