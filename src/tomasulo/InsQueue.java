@@ -28,4 +28,7 @@ public class InsQueue {
 	public boolean isFull(){
 		return buffer.size() == size;
 	}
+	public void flush(){
+		buffer.clear();
+	}
 }

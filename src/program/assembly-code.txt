@@ -1,2 +1,4 @@
 0
-LW r1 r0 50
+ADDI r1 r0 5
+SW r1 r0 50
+LW r2 r0 50
