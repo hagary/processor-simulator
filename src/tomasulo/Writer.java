@@ -96,6 +96,7 @@ public class Writer {
 					flush(i);
 					branchEntry.flush();
 					i.getRS().flush();
+					Simulator.getInsQueue().flush();
 					Simulator.getPC().setData(res);
 				}
 				else { 
@@ -113,6 +114,7 @@ public class Writer {
 					flush(i);
 					branchEntry.flush();
 					i.getRS().flush();
+					Simulator.getInsQueue().flush();
 					Simulator.getPC().setData(res);
 				}
 				else{
